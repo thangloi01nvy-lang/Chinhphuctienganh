@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ANNOUNCEMENTS, SCHEDULE } from '../constants';
-import { Bell, Calendar, Play, Download, Book, Eye, ArrowRight } from 'lucide-react';
+import { Bell, Calendar, Play, Download, Book, Eye, ArrowRight, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function StudentHub() {
   return (
@@ -156,15 +157,15 @@ export default function StudentHub() {
               <div className="w-24 h-32 bg-white border border-outline/10 flex flex-col p-4 flex-shrink-0">
                 <div className="w-full h-1 bg-outline-variant mb-2" />
                 <div className="mt-auto flex justify-center">
-                  <Eye className="w-8 h-8 text-surface-variant" />
+                  <FileText className="w-8 h-8 text-surface-variant" />
                 </div>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Tự học</span>
-                <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Sách bài tập Từ vựng Cấp tốc</h5>
-                <button className="mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
-                  Xem bản thử <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                </button>
+                <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Giáo án Mẫu</span>
+                <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Hoạt động Giao tiếp: Xử lý Tình huống (20')</h5>
+                <Link to="/lesson-plan" className="mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
+                  Xem chi tiết <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
             </div>
           </section>

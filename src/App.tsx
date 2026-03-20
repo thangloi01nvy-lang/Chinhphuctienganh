@@ -6,6 +6,8 @@ import Teachers from './pages/Teachers';
 import StudentHub from './pages/StudentHub';
 import Admin from './pages/Admin';
 
+import LessonPlan from './pages/LessonPlan';
+
 export default function App() {
   return (
     <Router>
@@ -14,6 +16,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="student-hub" element={<StudentHub />} />
+          <Route path="lesson-plan" element={<LessonPlan />} />
           <Route path="admin" element={<Admin />} />
         </Route>
       </Routes>
