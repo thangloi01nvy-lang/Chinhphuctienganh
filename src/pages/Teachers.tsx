@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { TEACHERS } from '../constants';
+import { useTeachers } from '../hooks/useTeachers';
 import { ArrowRight, Verified } from 'lucide-react';
 
 export default function Teachers() {
+  const { teachers } = useTeachers();
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -24,7 +26,9 @@ export default function Teachers() {
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline/10 w-full max-w-xs">
             <div className="flex items-center gap-3 mb-3 text-primary">
               <Verified className="w-8 h-8" />
-              <span className="font-headline font-extrabold text-3xl">09</span>
+              <span className="font-headline font-extrabold text-3xl">
+                {teachers.length < 10 ? `0${teachers.length}` : teachers.length}
+              </span>
             </div>
             <p className="text-xs font-bold tracking-widest uppercase text-on-surface-variant">Chuyên gia chứng nhận</p>
             <div className="mt-4 h-[2px] w-12 bg-primary"></div>
@@ -49,7 +53,7 @@ export default function Teachers() {
 
       <section className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {TEACHERS.map((teacher) => (
+          {teachers.map((teacher) => (
             <article key={teacher.id} className="scholar-card bg-white p-8 group">
               <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
                 <img 

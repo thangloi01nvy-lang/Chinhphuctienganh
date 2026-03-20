@@ -1,133 +1,336 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { CONSULTATIONS } from '../constants';
-import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle, Edit, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { useTeachers } from '../hooks/useTeachers';
+import { Teacher } from '../types';
 
 export default function Admin() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'teachers'>('overview');
+
+  const { teachers, addTeacher, updateTeacher, deleteTeacher } = useTeachers();
+  const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === 'admin' && password === 'admin123') {
+      setIsLoggedIn(true);
+      setError('');
+    } else {
+      setError('Tài khoản hoặc mật khẩu không đúng');
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setFormState: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormState((prev: any) => ({ ...prev, image: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface px-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white p-10 rounded-3xl shadow-xl border border-outline/10 w-full max-w-md"
+        >
+          <div className="text-center mb-8">
+            <h1 className="font-headline text-3xl font-extrabold text-on-surface mb-2">Đăng nhập Quản trị</h1>
+            <p className="text-sm text-on-surface-variant">Vui lòng đăng nhập để tiếp tục</p>
+          </div>
+          {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm mb-6 text-center font-medium">{error}</div>}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tài khoản</label>
+              <input 
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" 
+                placeholder="Nhập tài khoản..." 
+                type="text"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Mật khẩu</label>
+              <input 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" 
+                placeholder="Nhập mật khẩu..." 
+                type="password"
+              />
+            </div>
+            <button type="submit" className="w-full bg-primary text-white py-3.5 rounded-xl font-bold text-sm hover:bg-primary-dim transition-colors shadow-md">
+              Đăng nhập
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
+  const TeacherForm = ({ teacher, onSave, onCancel }: { teacher: Partial<Teacher>, onSave: (t: Teacher) => void, onCancel: () => void }) => {
+    const [formData, setFormData] = useState<Partial<Teacher>>(teacher);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formData.name || !formData.role || !formData.image) {
+        alert('Vui lòng điền đầy đủ thông tin và chọn ảnh!');
+        return;
+      }
+      onSave({
+        id: formData.id || Date.now().toString(),
+        name: formData.name,
+        role: formData.role,
+        bio: formData.bio || '',
+        image: formData.image,
+        tags: formData.tags || [],
+        quote: formData.quote || ''
+      });
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="bg-surface-variant/20 p-6 rounded-2xl border border-outline/10 space-y-4 mb-8">
+        <h3 className="font-bold text-lg mb-4">{teacher.id ? 'Chỉnh sửa Giáo viên' : 'Thêm Giáo viên mới'}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tên giáo viên</label>
+            <input value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Vai trò / Chuyên môn</label>
+            <input value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tiểu sử</label>
+          <textarea value={formData.bio || ''} onChange={e => setFormData({...formData, bio: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none h-20" required />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Câu nói yêu thích / Trích dẫn</label>
+          <input value={formData.quote || ''} onChange={e => setFormData({...formData, quote: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tags (Cách nhau bằng dấu phẩy)</label>
+          <input value={formData.tags?.join(', ') || ''} onChange={e => setFormData({...formData, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" placeholder="VD: GIAO TIẾP, 10+ NĂM KINH NGHIỆM" />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Ảnh đại diện</label>
+          <div className="flex items-center gap-4">
+            {formData.image && <img src={formData.image} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-outline/10" />}
+            <label className="cursor-pointer bg-white px-4 py-2 rounded-xl border border-outline/10 text-sm font-medium hover:bg-surface transition-colors flex items-center gap-2">
+              <ImageIcon className="w-4 h-4" /> Chọn ảnh
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, setFormData)} />
+            </label>
+          </div>
+        </div>
+        <div className="flex justify-end gap-3 pt-4">
+          <button type="button" onClick={onCancel} className="px-6 py-2 rounded-xl text-sm font-bold bg-white border border-outline/10 hover:bg-surface">Hủy</button>
+          <button type="submit" className="px-6 py-2 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dim shadow-sm">Lưu thông tin</button>
+        </div>
+      </form>
+    );
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="pt-32 pb-24 max-w-7xl mx-auto px-6"
     >
-      <header className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="font-headline text-4xl font-extrabold text-on-surface">Bảng Quản trị</h1>
           <p className="text-on-surface-variant font-light mt-1">Chào mừng trở lại, Quản trị viên. Đây là tổng quan hệ thống hôm nay.</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-6 py-2.5 bg-white border border-outline/10 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-surface transition-colors">
-            <FileText className="w-4 h-4" /> Xuất báo cáo
-          </button>
-          <button className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary-dim transition-colors shadow-sm">
-            <Settings className="w-4 h-4" /> Cài đặt
+          <button onClick={() => setIsLoggedIn(false)} className="px-6 py-2.5 bg-white border border-outline/10 rounded-xl text-sm font-bold hover:bg-surface transition-colors">
+            Đăng xuất
           </button>
         </div>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {[
-          { label: 'Tổng học viên', value: '1,284', change: '+12%', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Đăng ký mới', value: '42', change: '+5%', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-          { label: 'Tỷ lệ chuyển đổi', value: '18.5%', change: '+2.4%', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white p-8 rounded-3xl border border-outline/5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
-                <stat.icon className="w-6 h-6" />
+      <div className="flex gap-4 border-b border-surface-variant mb-8">
+        <button 
+          onClick={() => setActiveTab('overview')}
+          className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'overview' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+        >
+          Tổng quan
+        </button>
+        <button 
+          onClick={() => setActiveTab('teachers')}
+          className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'teachers' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+        >
+          Quản lý Giáo viên
+        </button>
+      </div>
+
+      {activeTab === 'overview' && (
+        <>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              { label: 'Tổng học viên', value: '1,284', change: '+12%', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+              { label: 'Đăng ký mới', value: '42', change: '+5%', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+              { label: 'Tỷ lệ chuyển đổi', value: '18.5%', change: '+2.4%', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
+            ].map((stat, i) => (
+              <div key={i} className="bg-white p-8 rounded-3xl border border-outline/5 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">{stat.change}</span>
+                </div>
+                <h3 className="text-on-surface-variant text-xs font-bold uppercase tracking-widest">{stat.label}</h3>
+                <p className="text-3xl font-headline font-extrabold mt-1">{stat.value}</p>
               </div>
-              <span className="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">{stat.change}</span>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Consultations Table */}
+            <div className="lg:col-span-8 bg-white rounded-3xl border border-outline/5 shadow-sm overflow-hidden">
+              <div className="p-8 border-b border-surface-variant flex items-center justify-between">
+                <h2 className="font-headline text-xl font-bold">Yêu cầu tư vấn mới</h2>
+                <button className="text-primary text-xs font-bold uppercase tracking-widest hover:underline">Xem tất cả</button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-surface text-[10px] font-bold text-outline uppercase tracking-widest">
+                      <th className="px-8 py-4">Học viên</th>
+                      <th className="px-8 py-4">Trình độ</th>
+                      <th className="px-8 py-4">Ngày đăng ký</th>
+                      <th className="px-8 py-4">Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-surface-variant">
+                    {CONSULTATIONS.map((req) => (
+                      <tr key={req.id} className="hover:bg-surface/50 transition-colors">
+                        <td className="px-8 py-5">
+                          <div className="font-bold text-sm">{req.name}</div>
+                          <div className="text-xs text-on-surface-variant">{req.phone}</div>
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className="text-[10px] font-bold px-2 py-1 bg-surface-variant rounded-full">{req.level}</span>
+                        </td>
+                        <td className="px-8 py-5 text-xs text-on-surface-variant">{req.date}</td>
+                        <td className="px-8 py-5">
+                          {req.status === 'completed' && (
+                            <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold uppercase">
+                              <CheckCircle className="w-3 h-3" /> Hoàn thành
+                            </span>
+                          )}
+                          {req.status === 'pending' && (
+                            <span className="flex items-center gap-1 text-amber-600 text-[10px] font-bold uppercase">
+                              <Clock className="w-3 h-3" /> Chờ xử lý
+                            </span>
+                          )}
+                          {req.status === 'processing' && (
+                            <span className="flex items-center gap-1 text-blue-600 text-[10px] font-bold uppercase">
+                              <AlertCircle className="w-3 h-3" /> Đang xử lý
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <h3 className="text-on-surface-variant text-xs font-bold uppercase tracking-widest">{stat.label}</h3>
-            <p className="text-3xl font-headline font-extrabold mt-1">{stat.value}</p>
-          </div>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Consultations Table */}
-        <div className="lg:col-span-8 bg-white rounded-3xl border border-outline/5 shadow-sm overflow-hidden">
-          <div className="p-8 border-b border-surface-variant flex items-center justify-between">
-            <h2 className="font-headline text-xl font-bold">Yêu cầu tư vấn mới</h2>
-            <button className="text-primary text-xs font-bold uppercase tracking-widest hover:underline">Xem tất cả</button>
+            {/* Content Update Form */}
+            <div className="lg:col-span-4 space-y-8">
+              <div className="bg-white p-8 rounded-3xl border border-outline/5 shadow-sm">
+                <h2 className="font-headline text-xl font-bold mb-6">Cập nhật nội dung</h2>
+                <form className="space-y-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tiêu đề thông báo</label>
+                    <input className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Nhập tiêu đề..." type="text"/>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Nội dung</label>
+                    <textarea className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none h-32" placeholder="Nhập nội dung thông báo mới..."></textarea>
+                  </div>
+                  <button className="w-full bg-on-surface text-white py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">
+                    Đăng thông báo
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-surface text-[10px] font-bold text-outline uppercase tracking-widest">
-                  <th className="px-8 py-4">Học viên</th>
-                  <th className="px-8 py-4">Trình độ</th>
-                  <th className="px-8 py-4">Ngày đăng ký</th>
-                  <th className="px-8 py-4">Trạng thái</th>
-                  <th className="px-8 py-4">Hành động</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-surface-variant">
-                {CONSULTATIONS.map((req) => (
-                  <tr key={req.id} className="hover:bg-surface/50 transition-colors">
-                    <td className="px-8 py-5">
-                      <div className="font-bold text-sm">{req.name}</div>
-                      <div className="text-xs text-on-surface-variant">{req.phone}</div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <span className="text-[10px] font-bold px-2 py-1 bg-surface-variant rounded-full">{req.level}</span>
-                    </td>
-                    <td className="px-8 py-5 text-xs text-on-surface-variant">{req.date}</td>
-                    <td className="px-8 py-5">
-                      {req.status === 'completed' && (
-                        <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold uppercase">
-                          <CheckCircle className="w-3 h-3" /> Hoàn thành
-                        </span>
-                      )}
-                      {req.status === 'pending' && (
-                        <span className="flex items-center gap-1 text-amber-600 text-[10px] font-bold uppercase">
-                          <Clock className="w-3 h-3" /> Chờ xử lý
-                        </span>
-                      )}
-                      {req.status === 'processing' && (
-                        <span className="flex items-center gap-1 text-blue-600 text-[10px] font-bold uppercase">
-                          <AlertCircle className="w-3 h-3" /> Đang xử lý
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-8 py-5">
-                      <button className="text-primary font-bold text-xs hover:underline">Chi tiết</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        </>
+      )}
+
+      {activeTab === 'teachers' && (
+        <div className="bg-white rounded-3xl border border-outline/5 shadow-sm p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-headline text-2xl font-bold">Danh sách Giáo viên</h2>
+            <button 
+              onClick={() => { setIsAdding(true); setEditingTeacher(null); }}
+              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary-dim transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4" /> Thêm Giáo viên
+            </button>
+          </div>
+
+          {isAdding && (
+            <TeacherForm 
+              teacher={{}} 
+              onSave={(t) => { addTeacher(t); setIsAdding(false); }} 
+              onCancel={() => setIsAdding(false)} 
+            />
+          )}
+
+          {editingTeacher && (
+            <TeacherForm 
+              teacher={editingTeacher} 
+              onSave={(t) => { updateTeacher(t); setEditingTeacher(null); }} 
+              onCancel={() => setEditingTeacher(null)} 
+            />
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teachers.map(teacher => (
+              <div key={teacher.id} className="border border-outline/10 rounded-2xl p-6 flex flex-col">
+                <div className="flex items-center gap-4 mb-4">
+                  <img src={teacher.image} alt={teacher.name} className="w-16 h-16 rounded-xl object-cover bg-surface-variant" />
+                  <div>
+                    <h4 className="font-bold text-lg">{teacher.name}</h4>
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{teacher.role}</span>
+                  </div>
+                </div>
+                <p className="text-sm text-on-surface-variant line-clamp-2 mb-4 flex-grow">{teacher.bio}</p>
+                <div className="flex gap-2 mt-auto pt-4 border-t border-surface-variant">
+                  <button 
+                    onClick={() => { setEditingTeacher(teacher); setIsAdding(false); }}
+                    className="flex-1 py-2 bg-surface-variant/50 hover:bg-surface-variant rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" /> Sửa
+                  </button>
+                  <button 
+                    onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xóa giáo viên này?')) deleteTeacher(teacher.id); }}
+                    className="flex-1 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" /> Xóa
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Content Update Form */}
-        <div className="lg:col-span-4 space-y-8">
-          <div className="bg-white p-8 rounded-3xl border border-outline/5 shadow-sm">
-            <h2 className="font-headline text-xl font-bold mb-6">Cập nhật nội dung</h2>
-            <form className="space-y-6">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tiêu đề thông báo</label>
-                <input className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Nhập tiêu đề..." type="text"/>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Nội dung</label>
-                <textarea className="w-full bg-surface-variant/30 border border-outline/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none h-32" placeholder="Nhập nội dung thông báo mới..."></textarea>
-              </div>
-              <button className="w-full bg-on-surface text-white py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">
-                Đăng thông báo
-              </button>
-            </form>
-          </div>
-
-          <div className="bg-primary-container/30 p-8 rounded-3xl border border-primary/10">
-            <h3 className="font-headline font-bold text-on-primary-container mb-2">Mẹo Quản trị</h3>
-            <p className="text-xs text-on-primary-container/80 leading-relaxed">
-              Hãy thường xuyên cập nhật lịch học và tài liệu mới để tăng tỷ lệ tương tác của học viên trên nền tảng.
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </motion.div>
   );
 }

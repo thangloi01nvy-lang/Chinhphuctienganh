@@ -1,9 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
-import { COURSES, TEACHERS } from '../constants';
+import { ArrowRight, ShieldCheck, LayoutTemplate, Sparkles, LayoutDashboard } from 'lucide-react';
+import { COURSES } from '../constants';
+import { useTeachers } from '../hooks/useTeachers';
 
 export default function Home() {
+  const { teachers } = useTeachers();
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -76,8 +79,10 @@ export default function Home() {
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <div className="flex -space-x-3">
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200" />
+                      {teachers.slice(0, 3).map(teacher => (
+                        <div key={teacher.id} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                          <img src={teacher.image} alt={teacher.name} className="w-full h-full object-cover" />
+                        </div>
                       ))}
                     </div>
                     <div className="text-sm font-semibold text-primary">Đội ngũ giáo viên hàng đầu</div>
@@ -105,7 +110,9 @@ export default function Home() {
               {COURSES.map((course) => (
                 <div key={course.id} className="p-8 scholar-card group">
                   <div className="w-12 h-12 bg-primary-container rounded-2xl flex items-center justify-center mb-6 text-primary">
-                    <span className="material-symbols-outlined text-3xl">{course.icon}</span>
+                    {course.icon === 'architecture' && <LayoutTemplate className="w-8 h-8" />}
+                    {course.icon === 'auto_awesome' && <Sparkles className="w-8 h-8" />}
+                    {course.icon === 'dashboard_customize' && <LayoutDashboard className="w-8 h-8" />}
                   </div>
                   <h3 className="font-headline text-xl font-bold mb-2">{course.title}</h3>
                   <p className="text-on-surface-variant font-light">{course.description}</p>
@@ -169,7 +176,7 @@ export default function Home() {
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {TEACHERS.slice(0, 2).map((teacher) => (
+                {teachers.slice(0, 2).map((teacher) => (
                   <div key={teacher.id} className="bg-white p-6 rounded-3xl scholar-card">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-20 h-20 rounded-2xl overflow-hidden bg-surface-variant border border-outline/5">
