@@ -1,0 +1,42 @@
+export interface Teacher {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+  tags: string[];
+  quote?: string;
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface ConsultationRequest {
+  id: string;
+  name: string;
+  phone: string;
+  level: string;
+  goal: string;
+  date: string;
+  status: 'pending' | 'processing' | 'completed';
+}
+
+export interface Announcement {
+  id: string;
+  type: string;
+  time: string;
+  content: string;
+}
+
+export interface ScheduleItem {
+  id: string;
+  day: string;
+  date: string;
+  title: string;
+  time: string;
+  location: string;
+}
