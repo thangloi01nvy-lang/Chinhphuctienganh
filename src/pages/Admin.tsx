@@ -3,18 +3,22 @@ import { motion } from 'motion/react';
 import { CONSULTATIONS } from '../constants';
 import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle, Edit, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { useTeachers } from '../hooks/useTeachers';
-import { Teacher } from '../types';
+import { useDocuments } from '../hooks/useDocuments';
+import { Teacher, DocumentItem } from '../types';
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'teachers'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'teachers' | 'documents'>('overview');
 
   const { teachers, addTeacher, updateTeacher, deleteTeacher } = useTeachers();
+  const { documents, addDocument, updateDocument, deleteDocument } = useDocuments();
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingDocument, setEditingDocument] = useState<DocumentItem | null>(null);
+  const [isAddingDocument, setIsAddingDocument] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +147,65 @@ export default function Admin() {
     );
   };
 
+  const DocumentForm = ({ document, onSave, onCancel }: { document: Partial<DocumentItem>, onSave: (d: DocumentItem) => void, onCancel: () => void }) => {
+    const [formData, setFormData] = useState<Partial<DocumentItem>>(document);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formData.title || !formData.category || !formData.url || !formData.type) {
+        alert('Vui lòng điền đầy đủ thông tin!');
+        return;
+      }
+      onSave({
+        id: formData.id || Date.now().toString(),
+        title: formData.title,
+        category: formData.category,
+        url: formData.url,
+        type: formData.type as 'pdf' | 'doc' | 'link'
+      });
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="bg-surface-variant/20 p-6 rounded-2xl border border-outline/10 space-y-4 mb-8">
+        <h3 className="font-bold text-lg mb-4">{document.id ? 'Chỉnh sửa Tài liệu' : 'Thêm Tài liệu mới'}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tên tài liệu</label>
+            <input value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Danh mục</label>
+            <select value={formData.category || ''} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
+              <option value="">Chọn danh mục...</option>
+              <option value="IELTS">IELTS</option>
+              <option value="TOEIC">TOEIC</option>
+              <option value="Ngữ pháp">Ngữ pháp</option>
+            </select>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Đường dẫn (URL)</label>
+            <input value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Loại tài liệu</label>
+            <select value={formData.type || ''} onChange={e => setFormData({...formData, type: e.target.value as any})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
+              <option value="">Chọn loại...</option>
+              <option value="pdf">PDF</option>
+              <option value="doc">DOC/DOCX</option>
+              <option value="link">Link Web</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex justify-end gap-3 pt-4">
+          <button type="button" onClick={onCancel} className="px-6 py-2 rounded-xl text-sm font-bold bg-white border border-outline/10 hover:bg-surface">Hủy</button>
+          <button type="submit" className="px-6 py-2 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dim shadow-sm">Lưu thông tin</button>
+        </div>
+      </form>
+    );
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -173,6 +236,12 @@ export default function Admin() {
           className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'teachers' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
         >
           Quản lý Giáo viên
+        </button>
+        <button 
+          onClick={() => setActiveTab('documents')}
+          className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'documents' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+        >
+          Quản lý Tài liệu
         </button>
       </div>
 
@@ -321,6 +390,65 @@ export default function Admin() {
                   </button>
                   <button 
                     onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xóa giáo viên này?')) deleteTeacher(teacher.id); }}
+                    className="flex-1 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" /> Xóa
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'documents' && (
+        <div className="bg-white rounded-3xl border border-outline/5 shadow-sm p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-headline text-2xl font-bold">Danh sách Tài liệu</h2>
+            <button 
+              onClick={() => { setIsAddingDocument(true); setEditingDocument(null); }}
+              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary-dim transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4" /> Thêm Tài liệu
+            </button>
+          </div>
+
+          {isAddingDocument && (
+            <DocumentForm 
+              document={{}} 
+              onSave={(d) => { addDocument(d); setIsAddingDocument(false); }} 
+              onCancel={() => setIsAddingDocument(false)} 
+            />
+          )}
+
+          {editingDocument && (
+            <DocumentForm 
+              document={editingDocument} 
+              onSave={(d) => { updateDocument(d); setEditingDocument(null); }} 
+              onCancel={() => setEditingDocument(null)} 
+            />
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {documents.map(doc => (
+              <div key={doc.id} className="border border-outline/10 rounded-2xl p-6 flex flex-col">
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div>
+                    <h4 className="font-bold text-lg mb-1">{doc.title}</h4>
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-1 rounded-full">{doc.category}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-outline-variant uppercase tracking-widest border border-outline/10 px-2 py-1 rounded-md">{doc.type}</span>
+                </div>
+                <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline line-clamp-1 mb-4 flex-grow">{doc.url}</a>
+                <div className="flex gap-2 mt-auto pt-4 border-t border-surface-variant">
+                  <button 
+                    onClick={() => { setEditingDocument(doc); setIsAddingDocument(false); }}
+                    className="flex-1 py-2 bg-surface-variant/50 hover:bg-surface-variant rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" /> Sửa
+                  </button>
+                  <button 
+                    onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) deleteDocument(doc.id); }}
                     className="flex-1 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" /> Xóa

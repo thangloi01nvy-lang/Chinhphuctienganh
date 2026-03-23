@@ -1,4 +1,4 @@
-import { Teacher, Course, Announcement, ScheduleItem, ConsultationRequest } from './types';
+import { Teacher, Course, Announcement, ScheduleItem, ConsultationRequest, DocumentItem } from './types';
 
 export const TEACHERS: Teacher[] = [
   {
@@ -120,4 +120,16 @@ export const CONSULTATIONS: ConsultationRequest[] = [
   { id: '1', name: 'Nguyễn Văn An', phone: '0901 234 567', level: 'MỚI BẮT ĐẦU', goal: 'Giao tiếp cơ bản', date: '24 tháng 10, 2023', status: 'pending' },
   { id: '2', name: 'Lê Thị Mai', phone: '0938 111 222', level: 'TRUNG CẤP', goal: 'Giao tiếp công việc', date: '23 tháng 10, 2023', status: 'completed' },
   { id: '3', name: 'Trần Minh Quân', phone: '0977 444 888', level: 'CAO CẤP', goal: 'Đàm phán kinh doanh', date: '22 tháng 10, 2023', status: 'processing' }
+];
+
+export const DOCUMENTS: DocumentItem[] = [
+  { id: '1', title: 'Tài liệu mẫu 1', category: 'IELTS', url: '#', type: 'pdf' },
+  { id: '2', title: 'Tài liệu mẫu 2', category: 'IELTS', url: '#', type: 'doc' },
+  { id: '3', title: 'Tài liệu mẫu 3', category: 'IELTS', url: '#', type: 'pdf' },
+  { id: '4', title: 'Tài liệu mẫu 1', category: 'TOEIC', url: '#', type: 'pdf' },
+  { id: '5', title: 'Tài liệu mẫu 2', category: 'TOEIC', url: '#', type: 'doc' },
+  { id: '6', title: 'Tài liệu mẫu 3', category: 'TOEIC', url: '#', type: 'pdf' },
+  { id: '7', title: 'Tài liệu mẫu 1', category: 'Ngữ pháp', url: '#', type: 'pdf' },
+  { id: '8', title: 'Tài liệu mẫu 2', category: 'Ngữ pháp', url: '#', type: 'doc' },
+  { id: '9', title: 'Tài liệu mẫu 3', category: 'Ngữ pháp', url: '#', type: 'pdf' },
 ];

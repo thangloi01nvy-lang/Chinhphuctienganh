@@ -3,8 +3,11 @@ import { motion } from 'motion/react';
 import { ANNOUNCEMENTS, SCHEDULE } from '../constants';
 import { Bell, Calendar, Play, Download, Book, Eye, ArrowRight, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDocuments } from '../hooks/useDocuments';
 
 export default function StudentHub() {
+  const { documents } = useDocuments();
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -116,22 +119,27 @@ export default function StudentHub() {
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {['IELTS', 'TOEIC', 'Ngữ pháp'].map((cat) => (
-                <div key={cat} className="space-y-6">
-                  <div className="w-10 h-10 border border-outline/10 flex items-center justify-center">
-                    <Book className="w-5 h-5 text-primary" />
+              {['IELTS', 'TOEIC', 'Ngữ pháp'].map((cat) => {
+                const catDocs = documents.filter(d => d.category === cat);
+                return (
+                  <div key={cat} className="space-y-6">
+                    <div className="w-10 h-10 border border-outline/10 flex items-center justify-center">
+                      <Book className="w-5 h-5 text-primary" />
+                    </div>
+                    <h4 className="text-sm font-extrabold uppercase tracking-widest">Tài liệu {cat}</h4>
+                    <div className="space-y-4">
+                      {catDocs.length > 0 ? catDocs.map(doc => (
+                        <a key={doc.id} href={doc.url} className="flex items-center justify-between group py-1 border-b border-transparent hover:border-surface-variant transition-all">
+                          <span className="text-[13px] text-on-surface-variant group-hover:text-primary">{doc.title}</span>
+                          <Download className="w-3 h-3 text-outline-variant group-hover:text-primary" />
+                        </a>
+                      )) : (
+                        <p className="text-[13px] text-on-surface-variant italic">Chưa có tài liệu</p>
+                      )}
+                    </div>
                   </div>
-                  <h4 className="text-sm font-extrabold uppercase tracking-widest">Tài liệu {cat}</h4>
-                  <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
-                      <a key={i} href="#" className="flex items-center justify-between group py-1 border-b border-transparent hover:border-surface-variant transition-all">
-                        <span className="text-[13px] text-on-surface-variant group-hover:text-primary">Tài liệu mẫu {i}</span>
-                        <Download className="w-3 h-3 text-outline-variant group-hover:text-primary" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 

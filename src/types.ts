@@ -40,3 +40,11 @@ export interface ScheduleItem {
   time: string;
   location: string;
 }
+
+export interface DocumentItem {
+  id: string;
+  title: string;
+  category: string;
+  url: string;
+  type: 'pdf' | 'doc' | 'link';
+}
