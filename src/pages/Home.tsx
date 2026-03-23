@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, LayoutTemplate, Sparkles, LayoutDashboard } from 'lucide-react';
 import { COURSES } from '../constants';
 import { useTeachers } from '../hooks/useTeachers';
@@ -171,9 +172,9 @@ export default function Home() {
                   <h2 className="font-headline text-3xl font-bold text-on-surface">Gặp gỡ giáo viên</h2>
                   <p className="text-on-surface-variant font-light">Những nhà giáo dục hàng đầu từ khắp nơi trên thế giới.</p>
                 </div>
-                <button className="text-primary font-bold text-sm hover:underline flex items-center gap-1">
+                <Link to="/teachers" className="text-primary font-bold text-sm hover:underline flex items-center gap-1">
                   Xem tất cả <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {teachers.slice(0, 2).map((teacher) => (
