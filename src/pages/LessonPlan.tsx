@@ -53,7 +53,8 @@ export default function LessonPlan() {
             <div style={{ padding: '20px' }}>
               <p style={{ marginBottom: '8px' }}><strong>Mục tiêu:</strong> Kích hoạt kiến thức nền, tạo không khí sôi nổi.</p>
               <p style={{ marginBottom: '8px' }}><strong>Nội dung:</strong> Chơi "Network" hoặc "Word Jumble" về nguồn tạo ra điện.</p>
-              <p style={{ margin: 0 }}><strong>Cách thức thực hiện:</strong> Chia lớp thành 4 đội. Chiếu hình bóng đèn và đặt câu hỏi <em>"Where does the electricity come from?"</em> trong 2 phút. Đại diện các nhóm dán bảng phụ, giáo viên chấm điểm và dẫn dắt vào bài mới.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Sản phẩm:</strong> Học sinh liệt kê được các nguồn tạo ra điện cơ bản (mặt trời, gió, nước, than...).</p>
+              <p style={{ margin: 0 }}><strong>Tổ chức thực hiện:</strong> Chia lớp thành 4 đội. Chiếu hình bóng đèn và đặt câu hỏi <em>"Where does the electricity come from?"</em> trong 2 phút. Đại diện các nhóm dán bảng phụ, giáo viên chấm điểm và dẫn dắt vào bài mới.</p>
             </div>
           </div>
 
@@ -63,8 +64,9 @@ export default function LessonPlan() {
             </div>
             <div style={{ padding: '20px' }}>
               <p style={{ marginBottom: '8px' }}><strong>Mục tiêu:</strong> Làm quen từ vựng và hiểu thông tin chi tiết văn bản.</p>
-              <p style={{ marginBottom: '8px' }}><strong>Thực hiện:</strong> Học sinh nghe audio (Track 69), đọc thầm và làm Activity 2 & 3. Sau đó đối chiếu với bạn cùng bàn (Pair work).</p>
-              <p style={{ margin: 0 }}><strong>Sản phẩm cốt lõi:</strong> Hiểu được các từ khóa <em>renewable, non-renewable, coal, oil, natural gas</em>.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Nội dung:</strong> Nghe và đọc đoạn hội thoại giữa Lan và Mr. Tan về các nguồn năng lượng. Hoàn thành bài tập điền từ và trả lời câu hỏi.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Sản phẩm:</strong> Hiểu được các từ khóa <em>renewable, non-renewable, coal, oil, natural gas</em> và hoàn thành đúng các bài tập trong SGK.</p>
+              <p style={{ margin: 0 }}><strong>Tổ chức thực hiện:</strong> Học sinh nghe audio (Track 69), đọc thầm và làm Activity 2 & 3. Sau đó đối chiếu với bạn cùng bàn (Pair work). Giáo viên gọi học sinh trả lời và sửa lỗi.</p>
             </div>
           </div>
 
@@ -74,7 +76,9 @@ export default function LessonPlan() {
             </div>
             <div style={{ padding: '20px' }}>
               <p style={{ marginBottom: '8px' }}><strong>Mục tiêu:</strong> Củng cố từ vựng qua hình ảnh trực quan.</p>
-              <p style={{ margin: 0 }}><strong>Thực hiện:</strong> Làm Activity 4, 5. Tổ chức trò chơi <em>"Slap the board"</em> với các bức tranh nguồn năng lượng để tăng tính tương tác.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Nội dung:</strong> Luyện tập từ vựng chỉ các nguồn năng lượng thông qua bài tập nối từ với hình ảnh và phân loại năng lượng.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Sản phẩm:</strong> Học sinh ghép đúng từ vựng với hình ảnh tương ứng và phân loại chính xác năng lượng tái tạo/không tái tạo.</p>
+              <p style={{ margin: 0 }}><strong>Tổ chức thực hiện:</strong> Yêu cầu học sinh làm Activity 4, 5. Tổ chức trò chơi <em>"Slap the board"</em> với các bức tranh nguồn năng lượng để tăng tính tương tác. Giáo viên tổng kết và khen thưởng.</p>
             </div>
           </div>
 
@@ -83,8 +87,10 @@ export default function LessonPlan() {
               <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 'bold' }}>4. Hoạt động 4: Vận dụng (Project/ Homework)</h4>
             </div>
             <div style={{ padding: '20px' }}>
-              <p style={{ marginBottom: '8px' }}><strong>Nhiệm vụ:</strong> Lập sơ đồ tư duy (Mindmap) phân loại các nguồn năng lượng (Renewable vs Non-renewable).</p>
-              <p style={{ margin: 0 }}><strong>Đánh giá:</strong> Thu sản phẩm vào tiết sau, chấm điểm dựa trên tính chính xác từ vựng, sáng tạo và thẩm mỹ.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Mục tiêu:</strong> Vận dụng kiến thức đã học để hệ thống hóa từ vựng và khái niệm về các nguồn năng lượng.</p>
+              <p style={{ marginBottom: '8px' }}><strong>Nội dung:</strong> Lập sơ đồ tư duy (Mindmap) phân loại các nguồn năng lượng (Renewable vs Non-renewable).</p>
+              <p style={{ marginBottom: '8px' }}><strong>Sản phẩm:</strong> Sơ đồ tư duy hoàn chỉnh, trình bày rõ ràng, sáng tạo và chính xác về mặt từ vựng.</p>
+              <p style={{ margin: 0 }}><strong>Tổ chức thực hiện:</strong> Giáo viên giao bài tập về nhà. Học sinh thực hiện cá nhân hoặc theo nhóm nhỏ. Thu sản phẩm vào tiết sau, chấm điểm dựa trên tính chính xác từ vựng, sáng tạo và thẩm mỹ.</p>
             </div>
           </div>
 
