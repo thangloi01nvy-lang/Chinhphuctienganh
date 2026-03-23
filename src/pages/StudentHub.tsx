@@ -114,9 +114,9 @@ export default function StudentHub() {
           <section>
             <div className="flex items-center justify-between mb-12 border-b border-surface-variant pb-6">
               <h2 className="text-2xl font-extrabold uppercase tracking-tight">Kho tài liệu</h2>
-              <button className="text-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 group">
+              <Link to="/documents" className="text-primary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 group">
                 Toàn bộ <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {['IELTS', 'TOEIC', 'Ngữ pháp'].map((cat) => {
@@ -170,7 +170,7 @@ export default function StudentHub() {
               </div>
               <div>
                 <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Giáo án Mẫu</span>
-                <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Hoạt động Giao tiếp: Xử lý Tình huống (20')</h5>
+                <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Unit 10: ENERGY SOURCES - Tiết: Getting Started</h5>
                 <Link to="/lesson-plan" className="mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
                   Xem chi tiết <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
