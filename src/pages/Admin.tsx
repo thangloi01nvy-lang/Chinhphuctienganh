@@ -177,6 +177,7 @@ export default function Admin() {
             <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Danh mục</label>
             <select value={formData.category || ''} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
               <option value="">Chọn danh mục...</option>
+              <option value="Văn bản">Văn bản</option>
               <option value="IELTS">IELTS</option>
               <option value="TOEIC">TOEIC</option>
               <option value="Ngữ pháp">Ngữ pháp</option>

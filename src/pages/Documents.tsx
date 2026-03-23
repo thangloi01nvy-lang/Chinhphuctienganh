@@ -8,7 +8,7 @@ export default function Documents() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Tất cả');
 
-  const categories = ['Tất cả', 'IELTS', 'TOEIC', 'Ngữ pháp'];
+  const categories = ['Tất cả', 'Văn bản', 'IELTS', 'TOEIC', 'Ngữ pháp'];
 
   const filteredDocuments = documents.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase());

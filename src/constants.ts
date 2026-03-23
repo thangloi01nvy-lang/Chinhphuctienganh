@@ -123,6 +123,7 @@ export const CONSULTATIONS: ConsultationRequest[] = [
 ];
 
 export const DOCUMENTS: DocumentItem[] = [
+  { id: 'doc-tt32', title: 'Thông tư 32/2018/TT-BGDĐT - Chương trình GDPT 2018', category: 'Văn bản', url: 'https://filethcs.hcm.edu.vn/Data/hcmedu/thcscanthanh/2022_3/thong-tu-32-2018-tt-bgddt-ban-hanh-chuong-trinh-giao-duc-pho-thong-moi_332022836.pdf', type: 'pdf' },
   { id: '1', title: 'Tài liệu mẫu 1', category: 'IELTS', url: '#', type: 'pdf' },
   { id: '2', title: 'Tài liệu mẫu 2', category: 'IELTS', url: '#', type: 'doc' },
   { id: '3', title: 'Tài liệu mẫu 3', category: 'IELTS', url: '#', type: 'pdf' },

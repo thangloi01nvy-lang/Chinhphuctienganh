@@ -118,8 +118,8 @@ export default function StudentHub() {
                 Toàn bộ <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {['IELTS', 'TOEIC', 'Ngữ pháp'].map((cat) => {
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+              {['Văn bản', 'IELTS', 'TOEIC', 'Ngữ pháp'].map((cat) => {
                 const catDocs = documents.filter(d => d.category === cat);
                 return (
                   <div key={cat} className="space-y-6">
