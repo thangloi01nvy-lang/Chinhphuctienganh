@@ -6,6 +6,10 @@ import { ArrowRight, Verified } from 'lucide-react';
 export default function Teachers() {
   const { teachers } = useTeachers();
   
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -58,7 +62,7 @@ export default function Teachers() {
               <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
                 <img 
                   alt={teacher.name} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
                   src={teacher.image}
                   referrerPolicy="no-referrer"
                 />

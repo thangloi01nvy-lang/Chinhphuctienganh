@@ -35,7 +35,37 @@ export default function Admin() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormState((prev: any) => ({ ...prev, image: reader.result as string }));
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 400;
+          const MAX_HEIGHT = 400;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            setFormState((prev: any) => ({ ...prev, image: dataUrl }));
+          } else {
+            setFormState((prev: any) => ({ ...prev, image: reader.result as string }));
+          }
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -132,7 +162,7 @@ export default function Admin() {
         <div className="space-y-1.5">
           <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Ảnh đại diện</label>
           <div className="flex items-center gap-4">
-            {formData.image && <img src={formData.image} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-outline/10" />}
+            {formData.image && <img src={formData.image} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-outline/10" referrerPolicy="no-referrer" />}
             <label className="cursor-pointer bg-white px-4 py-2 rounded-xl border border-outline/10 text-sm font-medium hover:bg-surface transition-colors flex items-center gap-2">
               <ImageIcon className="w-4 h-4" /> Chọn ảnh
               <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, setFormData)} />
@@ -375,7 +405,7 @@ export default function Admin() {
             {teachers.map(teacher => (
               <div key={teacher.id} className="border border-outline/10 rounded-2xl p-6 flex flex-col">
                 <div className="flex items-center gap-4 mb-4">
-                  <img src={teacher.image} alt={teacher.name} className="w-16 h-16 rounded-xl object-cover bg-surface-variant" />
+                  <img src={teacher.image} alt={teacher.name} className="w-16 h-16 rounded-xl object-cover bg-surface-variant" referrerPolicy="no-referrer" />
                   <div>
                     <h4 className="font-bold text-lg">{teacher.name}</h4>
                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{teacher.role}</span>
