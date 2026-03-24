@@ -1,10 +1,20 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { Search, Bell, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/documents?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
 
   const navLinks = [
     { to: '/', label: 'Trang chủ' },
@@ -39,14 +49,16 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center bg-surface-variant/50 px-4 py-2 rounded-full border border-outline/10">
+          <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-surface-variant/50 px-4 py-2 rounded-full border border-outline/10">
             <Search className="w-4 h-4 text-outline mr-2" />
             <input 
               type="text" 
               placeholder="Tìm kiếm..." 
-              className="bg-transparent border-none focus:ring-0 text-sm w-40 placeholder:text-outline-variant"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent border-none focus:ring-0 text-sm w-40 placeholder:text-outline-variant outline-none"
             />
-          </div>
+          </form>
           
           <button className="cta-gradient text-white px-6 py-2 rounded-full font-headline text-sm font-bold tracking-tight hover:opacity-90 transition-opacity shadow-sm">
             Đăng ký ngay
@@ -70,6 +82,16 @@ export default function Header() {
             exit={{ opacity: 0, y: -20 }}
             className="md:hidden bg-white border-b border-surface-variant px-6 py-8 space-y-4"
           >
+            <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="flex items-center bg-surface-variant/50 px-4 py-3 rounded-xl border border-outline/10 mb-6">
+              <Search className="w-5 h-5 text-outline mr-3" />
+              <input 
+                type="text" 
+                placeholder="Tìm kiếm..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 text-base w-full placeholder:text-outline-variant outline-none"
+              />
+            </form>
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
