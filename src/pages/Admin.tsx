@@ -168,7 +168,10 @@ export default function Admin() {
         bio: formData.bio || '',
         image: formData.image,
         tags: formData.tags || [],
-        quote: formData.quote || ''
+        quote: formData.quote || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        facebook: formData.facebook || ''
       });
     };
 
@@ -183,6 +186,20 @@ export default function Admin() {
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Vai trò / Chuyên môn</label>
             <input value={formData.role || ''} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Email</label>
+            <input type="email" value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Số điện thoại</label>
+            <input value={formData.phone || ''} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Link Facebook</label>
+            <input value={formData.facebook || ''} onChange={e => setFormData({...formData, facebook: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" />
           </div>
         </div>
         <div className="space-y-1.5">

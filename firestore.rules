@@ -24,13 +24,16 @@ service cloud.firestore {
     // Domain Validators
     // ===============================================================
     function isValidTeacher(data) {
-      return hasOnlyAllowedFields(['name', 'role', 'bio', 'image', 'tags', 'quote']) &&
+      return hasOnlyAllowedFields(['name', 'role', 'bio', 'image', 'tags', 'quote', 'email', 'phone', 'facebook']) &&
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.role is string && data.role.size() > 0 && data.role.size() < 100 &&
              data.bio is string && data.bio.size() < 2000 &&
              data.image is string && data.image.size() < 1048576 &&
              (!('tags' in data) || (data.tags is list && data.tags.size() < 20)) &&
-             (!('quote' in data) || (data.quote is string && data.quote.size() < 500));
+             (!('quote' in data) || (data.quote is string && data.quote.size() < 500)) &&
+             (!('email' in data) || (data.email is string && data.email.size() < 100)) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 20)) &&
+             (!('facebook' in data) || (data.facebook is string && data.facebook.size() < 200));
     }
 
     function isValidDocument(data) {

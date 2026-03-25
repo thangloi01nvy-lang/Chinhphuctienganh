@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useTeachers } from '../hooks/useTeachers';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
-import { ArrowRight, Verified, PlayCircle, Search } from 'lucide-react';
+import { ArrowRight, Verified, PlayCircle, Search, X, Mail, Phone, Facebook } from 'lucide-react';
+import { Teacher } from '../types';
 
 export default function Teachers() {
   const { teachers } = useTeachers();
   const { videos } = useTeacherVideos();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -93,7 +95,7 @@ export default function Teachers() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {filteredTeachers.length > 0 ? (
             filteredTeachers.map((teacher) => (
-              <article key={teacher.id} className="scholar-card bg-white p-8 group">
+              <article key={teacher.id} className="scholar-card bg-white p-8 group cursor-pointer" onClick={() => setSelectedTeacher(teacher)}>
                 <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
                   <img 
                     alt={teacher.name} 
@@ -106,7 +108,7 @@ export default function Teachers() {
                   </div>
                 </div>
                 <h3 className="font-headline text-2xl font-bold text-on-surface mb-3">{teacher.name}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-light italic">
+                <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-light italic line-clamp-3">
                   "{teacher.quote || teacher.bio}"
                 </p>
                 <div className="flex items-center justify-between pt-6 border-t border-surface-variant">
@@ -167,6 +169,110 @@ export default function Teachers() {
           </div>
         </div>
       </section>
+
+      {/* Teacher Detail Modal */}
+      <AnimatePresence>
+        {selectedTeacher && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTeacher(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+            >
+              <button 
+                onClick={() => setSelectedTeacher(null)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 text-white md:text-on-surface md:bg-surface-variant md:hover:bg-outline/10 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-surface-variant/30 flex-shrink-0">
+                <img 
+                  src={selectedTeacher.image} 
+                  alt={selectedTeacher.name}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                  <span className="text-white/90 text-[10px] font-bold tracking-widest uppercase block mb-1">{selectedTeacher.role}</span>
+                  <h2 className="text-white font-headline text-3xl font-bold">{selectedTeacher.name}</h2>
+                </div>
+              </div>
+              
+              <div className="w-full md:w-3/5 p-8 md:p-12 overflow-y-auto">
+                <div className="mb-8">
+                  <h3 className="text-[11px] font-bold tracking-[0.2em] text-primary uppercase mb-4">Tiểu sử</h3>
+                  <p className="text-on-surface-variant leading-relaxed whitespace-pre-line">
+                    {selectedTeacher.bio}
+                  </p>
+                </div>
+                
+                {selectedTeacher.quote && (
+                  <div className="mb-8 p-6 bg-surface-variant/30 rounded-2xl border-l-4 border-primary">
+                    <p className="text-on-surface font-light italic leading-relaxed">
+                      "{selectedTeacher.quote}"
+                    </p>
+                  </div>
+                )}
+                
+                {(selectedTeacher.email || selectedTeacher.phone || selectedTeacher.facebook) && (
+                  <div>
+                    <h3 className="text-[11px] font-bold tracking-[0.2em] text-primary uppercase mb-4">Thông tin liên hệ</h3>
+                    <div className="space-y-4">
+                      {selectedTeacher.email && (
+                        <div className="flex items-center gap-4 text-on-surface-variant hover:text-primary transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center flex-shrink-0">
+                            <Mail className="w-4 h-4" />
+                          </div>
+                          <a href={`mailto:${selectedTeacher.email}`} className="text-sm font-medium">{selectedTeacher.email}</a>
+                        </div>
+                      )}
+                      {selectedTeacher.phone && (
+                        <div className="flex items-center gap-4 text-on-surface-variant hover:text-primary transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center flex-shrink-0">
+                            <Phone className="w-4 h-4" />
+                          </div>
+                          <a href={`tel:${selectedTeacher.phone}`} className="text-sm font-medium">{selectedTeacher.phone}</a>
+                        </div>
+                      )}
+                      {selectedTeacher.facebook && (
+                        <div className="flex items-center gap-4 text-on-surface-variant hover:text-primary transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center flex-shrink-0">
+                            <Facebook className="w-4 h-4" />
+                          </div>
+                          <a href={selectedTeacher.facebook} target="_blank" rel="noopener noreferrer" className="text-sm font-medium break-all">
+                            {selectedTeacher.facebook}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {selectedTeacher.tags && selectedTeacher.tags.length > 0 && (
+                  <div className="mt-8 pt-8 border-t border-outline/10">
+                    <div className="flex flex-wrap gap-2">
+                      {selectedTeacher.tags.map(tag => (
+                        <span key={tag} className="px-3 py-1.5 bg-surface-variant/50 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase rounded-lg">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

@@ -6,6 +6,9 @@ export interface Teacher {
   image: string;
   tags: string[];
   quote?: string;
+  email?: string;
+  phone?: string;
+  facebook?: string;
 }
 
 export interface Course {
