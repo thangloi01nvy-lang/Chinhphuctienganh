@@ -4,21 +4,25 @@ import { CONSULTATIONS } from '../constants';
 import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle, Edit, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { useTeachers } from '../hooks/useTeachers';
 import { useDocuments } from '../hooks/useDocuments';
-import { Teacher, DocumentItem } from '../types';
+import { useTeacherVideos } from '../hooks/useTeacherVideos';
+import { Teacher, DocumentItem, TeacherVideo } from '../types';
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'teachers' | 'documents'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'teachers' | 'documents' | 'videos'>('overview');
 
   const { teachers, addTeacher, updateTeacher, deleteTeacher } = useTeachers();
   const { documents, addDocument, updateDocument, deleteDocument } = useDocuments();
+  const { videos, addVideo, updateVideo, deleteVideo } = useTeacherVideos();
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentItem | null>(null);
   const [isAddingDocument, setIsAddingDocument] = useState(false);
+  const [editingVideo, setEditingVideo] = useState<TeacherVideo | null>(null);
+  const [isAddingVideo, setIsAddingVideo] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,6 +241,53 @@ export default function Admin() {
     );
   };
 
+  const VideoForm = ({ video, onSave, onCancel }: { video: Partial<TeacherVideo>, onSave: (v: TeacherVideo) => void, onCancel: () => void }) => {
+    const [formData, setFormData] = useState<Partial<TeacherVideo>>(video);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formData.teacherName || !formData.title || !formData.embedUrl) {
+        alert('Vui lòng điền đầy đủ thông tin!');
+        return;
+      }
+      onSave({
+        id: formData.id || Date.now().toString(),
+        teacherName: formData.teacherName,
+        title: formData.title,
+        embedUrl: formData.embedUrl
+      });
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="bg-surface-variant/20 p-6 rounded-2xl border border-outline/10 space-y-4 mb-8">
+        <h3 className="font-bold text-lg mb-4">{video.id ? 'Chỉnh sửa Video' : 'Thêm Video mới'}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tên giáo viên</label>
+            <select value={formData.teacherName || ''} onChange={e => setFormData({...formData, teacherName: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
+              <option value="">Chọn giáo viên...</option>
+              {teachers.map(t => (
+                <option key={t.id} value={t.name}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Tiêu đề video</label>
+            <input value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Đường dẫn Nhúng (Embed URL)</label>
+          <input value={formData.embedUrl || ''} onChange={e => setFormData({...formData, embedUrl: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required placeholder="VD: https://www.youtube.com/embed/..." />
+        </div>
+        <div className="flex justify-end gap-3 pt-4">
+          <button type="button" onClick={onCancel} className="px-6 py-2 rounded-xl text-sm font-bold bg-white border border-outline/10 hover:bg-surface">Hủy</button>
+          <button type="submit" className="px-6 py-2 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dim shadow-sm">Lưu thông tin</button>
+        </div>
+      </form>
+    );
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -273,6 +324,12 @@ export default function Admin() {
           className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'documents' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
         >
           Quản lý Tài liệu
+        </button>
+        <button 
+          onClick={() => setActiveTab('videos')}
+          className={`pb-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'videos' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+        >
+          Quản lý Video
         </button>
       </div>
 
@@ -480,6 +537,72 @@ export default function Admin() {
                   </button>
                   <button 
                     onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) deleteDocument(doc.id); }}
+                    className="flex-1 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" /> Xóa
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'videos' && (
+        <div className="bg-white rounded-3xl border border-outline/5 shadow-sm p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-headline text-2xl font-bold">Danh sách Video Giáo viên</h2>
+            <button 
+              onClick={() => { setIsAddingVideo(true); setEditingVideo(null); }}
+              className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary-dim transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4" /> Thêm Video
+            </button>
+          </div>
+
+          {isAddingVideo && (
+            <VideoForm 
+              video={{}} 
+              onSave={(v) => { addVideo(v); setIsAddingVideo(false); }} 
+              onCancel={() => setIsAddingVideo(false)} 
+            />
+          )}
+
+          {editingVideo && (
+            <VideoForm 
+              video={editingVideo} 
+              onSave={(v) => { updateVideo(v); setEditingVideo(null); }} 
+              onCancel={() => setEditingVideo(null)} 
+            />
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map(video => (
+              <div key={video.id} className="border border-outline/10 rounded-2xl p-6 flex flex-col">
+                <div className="aspect-video relative bg-slate-100 rounded-xl overflow-hidden mb-4">
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src={video.embedUrl} 
+                    title={video.title} 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerPolicy="strict-origin-when-cross-origin" 
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                  ></iframe>
+                </div>
+                <h4 className="font-bold text-lg mb-1">{video.teacherName}</h4>
+                <p className="text-sm text-on-surface-variant mb-4 flex-grow">{video.title}</p>
+                <div className="flex gap-2 mt-auto pt-4 border-t border-surface-variant">
+                  <button 
+                    onClick={() => { setEditingVideo(video); setIsAddingVideo(false); }}
+                    className="flex-1 py-2 bg-surface-variant/50 hover:bg-surface-variant rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" /> Sửa
+                  </button>
+                  <button 
+                    onClick={() => { if(window.confirm('Bạn có chắc chắn muốn xóa video này?')) deleteVideo(video.id); }}
                     className="flex-1 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" /> Xóa

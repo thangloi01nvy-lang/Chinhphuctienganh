@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useTeachers } from '../hooks/useTeachers';
+import { useTeacherVideos } from '../hooks/useTeacherVideos';
 import { ArrowRight, Verified, PlayCircle } from 'lucide-react';
-import { TEACHER_VIDEOS } from '../constants';
 
 export default function Teachers() {
   const { teachers } = useTeachers();
+  const { videos } = useTeacherVideos();
   
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -102,7 +103,7 @@ export default function Teachers() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {TEACHER_VIDEOS.map((video) => (
+            {videos.map((video) => (
               <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
                 <div className="aspect-video relative bg-slate-100">
                   <iframe 

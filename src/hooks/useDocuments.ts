@@ -7,7 +7,7 @@ export function useDocuments() {
 
   useEffect(() => {
     const loadDocuments = () => {
-      const stored = localStorage.getItem('app_documents_v3');
+      const stored = localStorage.getItem('app_documents_v1');
       if (stored) {
         try {
           setDocuments(JSON.parse(stored));
@@ -16,14 +16,14 @@ export function useDocuments() {
         }
       } else {
         setDocuments(defaultDocuments);
-        localStorage.setItem('app_documents_v3', JSON.stringify(defaultDocuments));
+        localStorage.setItem('app_documents_v1', JSON.stringify(defaultDocuments));
       }
     };
 
     loadDocuments();
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'app_documents_v3') {
+      if (e.key === 'app_documents_v1') {
         loadDocuments();
       }
     };
@@ -44,11 +44,11 @@ export function useDocuments() {
     const newDocuments = documents.map(d => d.id === updatedDocument.id ? updatedDocument : d);
     setDocuments(newDocuments);
     try {
-      localStorage.setItem('app_documents_v3', JSON.stringify(newDocuments));
+      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
       window.dispatchEvent(new Event('app_documents_changed'));
     } catch (e) {
       console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi. Kích thước ảnh có thể quá lớn.");
+      alert("Không thể lưu thay đổi.");
     }
   };
 
@@ -56,11 +56,11 @@ export function useDocuments() {
     const newDocuments = [...documents, newDocument];
     setDocuments(newDocuments);
     try {
-      localStorage.setItem('app_documents_v3', JSON.stringify(newDocuments));
+      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
       window.dispatchEvent(new Event('app_documents_changed'));
     } catch (e) {
       console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi. Kích thước ảnh có thể quá lớn.");
+      alert("Không thể lưu thay đổi.");
     }
   };
 
@@ -68,7 +68,7 @@ export function useDocuments() {
     const newDocuments = documents.filter(d => d.id !== id);
     setDocuments(newDocuments);
     try {
-      localStorage.setItem('app_documents_v3', JSON.stringify(newDocuments));
+      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
       window.dispatchEvent(new Event('app_documents_changed'));
     } catch (e) {
       console.error("Failed to save to localStorage", e);

@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "Teacher": {
+      "title": "Teacher",
+      "description": "A teacher profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "bio": { "type": "string" },
+        "image": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "quote": { "type": "string" }
+      },
+      "required": ["name", "role", "bio", "image"]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "A document resource",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "url": { "type": "string" },
+        "type": { "type": "string", "enum": ["pdf", "doc", "link"] }
+      },
+      "required": ["title", "category", "url", "type"]
+    },
+    "TeacherVideo": {
+      "title": "TeacherVideo",
+      "description": "A video of a teacher teaching",
+      "type": "object",
+      "properties": {
+        "teacherName": { "type": "string" },
+        "title": { "type": "string" },
+        "embedUrl": { "type": "string" }
+      },
+      "required": ["teacherName", "title", "embedUrl"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user profile, used for admin role",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["role"]
+    }
+  },
+  "firestore": {
+    "/teachers/{teacherId}": {
+      "schema": { "$ref": "#/entities/Teacher" },
+      "description": "Collection of teachers"
+    },
+    "/documents/{documentId}": {
+      "schema": { "$ref": "#/entities/Document" },
+      "description": "Collection of documents"
+    },
+    "/videos/{videoId}": {
+      "schema": { "$ref": "#/entities/TeacherVideo" },
+      "description": "Collection of teacher videos"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Collection of users"
+    }
+  }
+}
