@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { CONSULTATIONS } from '../constants';
 import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle, Edit, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
@@ -6,6 +6,8 @@ import { useTeachers } from '../hooks/useTeachers';
 import { useDocuments } from '../hooks/useDocuments';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
 import { Teacher, DocumentItem, TeacherVideo } from '../types';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,6 +15,17 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'teachers' | 'documents' | 'videos'>('overview');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && user.email === 'admin@example.com') {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const { teachers, addTeacher, updateTeacher, deleteTeacher } = useTeachers();
   const { documents, addDocument, updateDocument, deleteDocument } = useDocuments();
@@ -24,13 +37,34 @@ export default function Admin() {
   const [editingVideo, setEditingVideo] = useState<TeacherVideo | null>(null);
   const [isAddingVideo, setIsAddingVideo] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username === 'admin' && password === 'admin123') {
-      setIsLoggedIn(true);
-      setError('');
+      try {
+        await signInWithEmailAndPassword(auth, 'admin@example.com', 'admin123');
+        setIsLoggedIn(true);
+        setError('');
+      } catch (err: any) {
+        try {
+          await createUserWithEmailAndPassword(auth, 'admin@example.com', 'admin123');
+          setIsLoggedIn(true);
+          setError('');
+        } catch (createErr) {
+          console.error(createErr);
+          setError('Lỗi kết nối máy chủ xác thực.');
+        }
+      }
     } else {
       setError('Tài khoản hoặc mật khẩu không đúng');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 
@@ -300,7 +334,7 @@ export default function Admin() {
           <p className="text-on-surface-variant font-light mt-1">Chào mừng trở lại, Quản trị viên. Đây là tổng quan hệ thống hôm nay.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setIsLoggedIn(false)} className="px-6 py-2.5 bg-white border border-outline/10 rounded-xl text-sm font-bold hover:bg-surface transition-colors">
+          <button onClick={handleLogout} className="px-6 py-2.5 bg-white border border-outline/10 rounded-xl text-sm font-bold hover:bg-surface transition-colors">
             Đăng xuất
           </button>
         </div>
