@@ -15,6 +15,8 @@ export default function Documents() {
     const q = searchParams.get('q');
     if (q !== null) {
       setSearchTerm(q);
+    } else {
+      setSearchTerm('');
     }
   }, [searchParams]);
 
@@ -31,8 +33,10 @@ export default function Documents() {
   const categories = ['Tất cả', 'Văn bản', 'IELTS', 'TOEIC', 'Ngữ pháp'];
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'Tất cả' || doc.category === selectedCategory;
+    const title = doc.title || '';
+    const category = doc.category || '';
+    const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'Tất cả' || category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 

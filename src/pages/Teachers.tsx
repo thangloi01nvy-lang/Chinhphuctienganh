@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useTeachers } from '../hooks/useTeachers';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
-import { ArrowRight, Verified, PlayCircle } from 'lucide-react';
+import { ArrowRight, Verified, PlayCircle, Search } from 'lucide-react';
 
 export default function Teachers() {
   const { teachers } = useTeachers();
   const { videos } = useTeacherVideos();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const categories = ['Tất cả', 'Giao tiếp', 'TOEIC', 'Thiếu nhi', 'Thương mại'];
+
+  const filteredTeachers = teachers.filter(teacher => {
+    const name = teacher.name || '';
+    const role = teacher.role || '';
+    const tags = teacher.tags || [];
+    
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          role.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === 'Tất cả' || 
+                            role.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+                            tags.some(tag => tag.toLowerCase().includes(selectedCategory.toLowerCase()));
+                            
+    return matchesSearch && matchesCategory;
+  });
   
   return (
     <motion.div 
@@ -43,45 +62,66 @@ export default function Teachers() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-16">
-        <div className="flex flex-wrap items-center gap-2 border-b border-surface-variant pb-8">
-          {['Tất cả', 'Giao tiếp', 'TOEIC', 'Thiếu nhi', 'Thương mại'].map((filter, i) => (
-            <button 
-              key={filter}
-              className={`px-6 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all ${
-                i === 0 ? 'bg-primary text-white' : 'hover:bg-primary-container text-on-surface-variant'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
+        <div className="flex flex-col md:flex-row gap-6 border-b border-surface-variant pb-8">
+          <div className="relative flex-grow max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-outline-variant" />
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm giáo viên..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white border border-outline/10 rounded-xl pl-12 pr-4 py-3.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none shadow-sm"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {categories.map((filter) => (
+              <button 
+                key={filter}
+                onClick={() => setSelectedCategory(filter)}
+                className={`px-6 py-3.5 rounded-xl text-[11px] font-bold tracking-widest uppercase transition-all shadow-sm ${
+                  selectedCategory === filter ? 'bg-primary text-white' : 'bg-white border border-outline/10 text-on-surface-variant hover:bg-surface'
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {teachers.map((teacher) => (
-            <article key={teacher.id} className="scholar-card bg-white p-8 group">
-              <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
-                <img 
-                  alt={teacher.name} 
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
-                  src={teacher.image}
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/60 to-transparent">
-                  <span className="text-white text-[10px] font-bold tracking-widest uppercase">{teacher.role}</span>
+          {filteredTeachers.length > 0 ? (
+            filteredTeachers.map((teacher) => (
+              <article key={teacher.id} className="scholar-card bg-white p-8 group">
+                <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
+                  <img 
+                    alt={teacher.name} 
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
+                    src={teacher.image}
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/60 to-transparent">
+                    <span className="text-white text-[10px] font-bold tracking-widest uppercase">{teacher.role}</span>
+                  </div>
                 </div>
-              </div>
-              <h3 className="font-headline text-2xl font-bold text-on-surface mb-3">{teacher.name}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-light italic">
-                "{teacher.quote || teacher.bio}"
-              </p>
-              <div className="flex items-center justify-between pt-6 border-t border-surface-variant">
-                <span className="text-[10px] font-bold tracking-widest text-primary">TIỂU SỬ & LIÊN HỆ</span>
-                <ArrowRight className="w-4 h-4 text-outline group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-            </article>
-          ))}
+                <h3 className="font-headline text-2xl font-bold text-on-surface mb-3">{teacher.name}</h3>
+                <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-light italic">
+                  "{teacher.quote || teacher.bio}"
+                </p>
+                <div className="flex items-center justify-between pt-6 border-t border-surface-variant">
+                  <span className="text-[10px] font-bold tracking-widest text-primary">TIỂU SỬ & LIÊN HỆ</span>
+                  <ArrowRight className="w-4 h-4 text-outline group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="col-span-full py-20 text-center border-2 border-dashed border-outline/10 rounded-3xl">
+              <Search className="w-12 h-12 text-outline-variant mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-bold text-on-surface-variant mb-2">Không tìm thấy giáo viên</h3>
+              <p className="text-sm text-outline-variant">Thử thay đổi từ khóa tìm kiếm hoặc danh mục.</p>
+            </div>
+          )}
         </div>
       </section>
 

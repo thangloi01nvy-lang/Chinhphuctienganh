@@ -50,7 +50,9 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-surface-variant/50 px-4 py-2 rounded-full border border-outline/10">
-            <Search className="w-4 h-4 text-outline mr-2" />
+            <button type="submit" className="focus:outline-none">
+              <Search className="w-4 h-4 text-outline mr-2 hover:text-primary transition-colors" />
+            </button>
             <input 
               type="text" 
               placeholder="Tìm kiếm..." 
@@ -83,7 +85,9 @@ export default function Header() {
             className="md:hidden bg-white border-b border-surface-variant px-6 py-8 space-y-4"
           >
             <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="flex items-center bg-surface-variant/50 px-4 py-3 rounded-xl border border-outline/10 mb-6">
-              <Search className="w-5 h-5 text-outline mr-3" />
+              <button type="submit" className="focus:outline-none">
+                <Search className="w-5 h-5 text-outline mr-3 hover:text-primary transition-colors" />
+              </button>
               <input 
                 type="text" 
                 placeholder="Tìm kiếm..." 
