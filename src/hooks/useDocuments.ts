@@ -1,77 +1,69 @@
 import { useState, useEffect } from 'react';
-import { DOCUMENTS as defaultDocuments } from '../constants';
 import { DocumentItem } from '../types';
+import { db } from '../firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 export function useDocuments() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
 
   useEffect(() => {
-    const loadDocuments = () => {
-      const stored = localStorage.getItem('app_documents_v1');
-      if (stored) {
-        try {
-          setDocuments(JSON.parse(stored));
-        } catch (e) {
-          setDocuments(defaultDocuments);
+    const documentsRef = collection(db, 'documents');
+    const unsubscribe = onSnapshot(documentsRef, async (snapshot) => {
+      if (snapshot.empty) {
+        const localData = localStorage.getItem('app_documents');
+        if (localData) {
+          try {
+            const parsed = JSON.parse(localData);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              console.log('Migrating documents from local storage to Firebase...');
+              for (const docItem of parsed) {
+                const { id, ...data } = docItem;
+                await setDoc(doc(db, 'documents', id), data);
+              }
+            }
+          } catch (e) {
+            console.error('Migration failed', e);
+          }
         }
-      } else {
-        setDocuments(defaultDocuments);
-        localStorage.setItem('app_documents_v1', JSON.stringify(defaultDocuments));
       }
-    };
 
-    loadDocuments();
+      const loadedDocuments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as DocumentItem[];
+      setDocuments(loadedDocuments);
+    }, (error) => {
+      console.error('Firestore Error: ', error);
+    });
 
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'app_documents_v1') {
-        loadDocuments();
-      }
-    };
-
-    const handleCustomChange = () => {
-      loadDocuments();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('app_documents_changed', handleCustomChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('app_documents_changed', handleCustomChange);
-    };
+    return () => unsubscribe();
   }, []);
 
-  const updateDocument = (updatedDocument: DocumentItem) => {
-    const newDocuments = documents.map(d => d.id === updatedDocument.id ? updatedDocument : d);
-    setDocuments(newDocuments);
+  const updateDocument = async (updatedDocument: DocumentItem) => {
     try {
-      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
-      window.dispatchEvent(new Event('app_documents_changed'));
+      const { id, ...data } = updatedDocument;
+      await setDoc(doc(db, 'documents', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const addDocument = (newDocument: DocumentItem) => {
-    const newDocuments = [...documents, newDocument];
-    setDocuments(newDocuments);
+  const addDocument = async (newDocument: DocumentItem) => {
     try {
-      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
-      window.dispatchEvent(new Event('app_documents_changed'));
+      const { id, ...data } = newDocument;
+      await setDoc(doc(db, 'documents', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const deleteDocument = (id: string) => {
-    const newDocuments = documents.filter(d => d.id !== id);
-    setDocuments(newDocuments);
+  const deleteDocument = async (id: string) => {
     try {
-      localStorage.setItem('app_documents_v1', JSON.stringify(newDocuments));
-      window.dispatchEvent(new Event('app_documents_changed'));
+      await deleteDoc(doc(db, 'documents', id));
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
+      console.error("Failed to delete from Firestore", e);
       alert("Không thể lưu thay đổi.");
     }
   };

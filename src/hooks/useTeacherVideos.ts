@@ -1,77 +1,69 @@
 import { useState, useEffect } from 'react';
-import { TEACHER_VIDEOS as defaultVideos } from '../constants';
 import { TeacherVideo } from '../types';
+import { db } from '../firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 export function useTeacherVideos() {
   const [videos, setVideos] = useState<TeacherVideo[]>([]);
 
   useEffect(() => {
-    const loadVideos = () => {
-      const stored = localStorage.getItem('app_videos_v1');
-      if (stored) {
-        try {
-          setVideos(JSON.parse(stored));
-        } catch (e) {
-          setVideos(defaultVideos);
+    const videosRef = collection(db, 'videos');
+    const unsubscribe = onSnapshot(videosRef, async (snapshot) => {
+      if (snapshot.empty) {
+        const localData = localStorage.getItem('app_videos');
+        if (localData) {
+          try {
+            const parsed = JSON.parse(localData);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              console.log('Migrating videos from local storage to Firebase...');
+              for (const video of parsed) {
+                const { id, ...data } = video;
+                await setDoc(doc(db, 'videos', id), data);
+              }
+            }
+          } catch (e) {
+            console.error('Migration failed', e);
+          }
         }
-      } else {
-        setVideos(defaultVideos);
-        localStorage.setItem('app_videos_v1', JSON.stringify(defaultVideos));
       }
-    };
 
-    loadVideos();
+      const loadedVideos = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as TeacherVideo[];
+      setVideos(loadedVideos);
+    }, (error) => {
+      console.error('Firestore Error: ', error);
+    });
 
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'app_videos_v1') {
-        loadVideos();
-      }
-    };
-
-    const handleCustomChange = () => {
-      loadVideos();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('app_videos_changed', handleCustomChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('app_videos_changed', handleCustomChange);
-    };
+    return () => unsubscribe();
   }, []);
 
-  const updateVideo = (updatedVideo: TeacherVideo) => {
-    const newVideos = videos.map(v => v.id === updatedVideo.id ? updatedVideo : v);
-    setVideos(newVideos);
+  const updateVideo = async (updatedVideo: TeacherVideo) => {
     try {
-      localStorage.setItem('app_videos_v1', JSON.stringify(newVideos));
-      window.dispatchEvent(new Event('app_videos_changed'));
+      const { id, ...data } = updatedVideo;
+      await setDoc(doc(db, 'videos', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const addVideo = (newVideo: TeacherVideo) => {
-    const newVideos = [...videos, newVideo];
-    setVideos(newVideos);
+  const addVideo = async (newVideo: TeacherVideo) => {
     try {
-      localStorage.setItem('app_videos_v1', JSON.stringify(newVideos));
-      window.dispatchEvent(new Event('app_videos_changed'));
+      const { id, ...data } = newVideo;
+      await setDoc(doc(db, 'videos', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const deleteVideo = (id: string) => {
-    const newVideos = videos.filter(v => v.id !== id);
-    setVideos(newVideos);
+  const deleteVideo = async (id: string) => {
     try {
-      localStorage.setItem('app_videos_v1', JSON.stringify(newVideos));
-      window.dispatchEvent(new Event('app_videos_changed'));
+      await deleteDoc(doc(db, 'videos', id));
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
+      console.error("Failed to delete from Firestore", e);
       alert("Không thể lưu thay đổi.");
     }
   };

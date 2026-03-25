@@ -1,77 +1,69 @@
 import { useState, useEffect } from 'react';
-import { TEACHERS as defaultTeachers } from '../constants';
 import { Teacher } from '../types';
+import { db } from '../firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 export function useTeachers() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
-    const loadTeachers = () => {
-      const stored = localStorage.getItem('app_teachers_v3');
-      if (stored) {
-        try {
-          setTeachers(JSON.parse(stored));
-        } catch (e) {
-          setTeachers(defaultTeachers);
+    const teachersRef = collection(db, 'teachers');
+    const unsubscribe = onSnapshot(teachersRef, async (snapshot) => {
+      if (snapshot.empty) {
+        const localData = localStorage.getItem('app_teachers');
+        if (localData) {
+          try {
+            const parsed = JSON.parse(localData);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              console.log('Migrating teachers from local storage to Firebase...');
+              for (const teacher of parsed) {
+                const { id, ...data } = teacher;
+                await setDoc(doc(db, 'teachers', id), data);
+              }
+            }
+          } catch (e) {
+            console.error('Migration failed', e);
+          }
         }
-      } else {
-        setTeachers(defaultTeachers);
-        localStorage.setItem('app_teachers_v3', JSON.stringify(defaultTeachers));
       }
-    };
 
-    loadTeachers();
+      const loadedTeachers = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Teacher[];
+      setTeachers(loadedTeachers);
+    }, (error) => {
+      console.error('Firestore Error: ', error);
+    });
 
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'app_teachers_v3') {
-        loadTeachers();
-      }
-    };
-
-    const handleCustomChange = () => {
-      loadTeachers();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('app_teachers_changed', handleCustomChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('app_teachers_changed', handleCustomChange);
-    };
+    return () => unsubscribe();
   }, []);
 
-  const updateTeacher = (updatedTeacher: Teacher) => {
-    const newTeachers = teachers.map(t => t.id === updatedTeacher.id ? updatedTeacher : t);
-    setTeachers(newTeachers);
+  const updateTeacher = async (updatedTeacher: Teacher) => {
     try {
-      localStorage.setItem('app_teachers_v3', JSON.stringify(newTeachers));
-      window.dispatchEvent(new Event('app_teachers_changed'));
+      const { id, ...data } = updatedTeacher;
+      await setDoc(doc(db, 'teachers', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi. Kích thước ảnh có thể quá lớn.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const addTeacher = (newTeacher: Teacher) => {
-    const newTeachers = [...teachers, newTeacher];
-    setTeachers(newTeachers);
+  const addTeacher = async (newTeacher: Teacher) => {
     try {
-      localStorage.setItem('app_teachers_v3', JSON.stringify(newTeachers));
-      window.dispatchEvent(new Event('app_teachers_changed'));
+      const { id, ...data } = newTeacher;
+      await setDoc(doc(db, 'teachers', id), data);
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
-      alert("Không thể lưu thay đổi. Kích thước ảnh có thể quá lớn.");
+      console.error("Failed to save to Firestore", e);
+      alert("Không thể lưu thay đổi. Vui lòng kiểm tra quyền.");
     }
   };
 
-  const deleteTeacher = (id: string) => {
-    const newTeachers = teachers.filter(t => t.id !== id);
-    setTeachers(newTeachers);
+  const deleteTeacher = async (id: string) => {
     try {
-      localStorage.setItem('app_teachers_v3', JSON.stringify(newTeachers));
-      window.dispatchEvent(new Event('app_teachers_changed'));
+      await deleteDoc(doc(db, 'teachers', id));
     } catch (e) {
-      console.error("Failed to save to localStorage", e);
+      console.error("Failed to delete from Firestore", e);
       alert("Không thể lưu thay đổi.");
     }
   };
