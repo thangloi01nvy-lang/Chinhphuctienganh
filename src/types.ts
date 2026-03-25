@@ -48,3 +48,10 @@ export interface DocumentItem {
   url: string;
   type: 'pdf' | 'doc' | 'link';
 }
+
+export interface TeacherVideo {
+  id: string;
+  teacherName: string;
+  title: string;
+  embedUrl: string;
+}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useTeachers } from '../hooks/useTeachers';
-import { ArrowRight, Verified } from 'lucide-react';
+import { ArrowRight, Verified, PlayCircle } from 'lucide-react';
+import { TEACHER_VIDEOS } from '../constants';
 
 export default function Teachers() {
   const { teachers } = useTeachers();
@@ -55,7 +56,7 @@ export default function Teachers() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6">
+      <section className="max-w-7xl mx-auto px-6 mb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {teachers.map((teacher) => (
             <article key={teacher.id} className="scholar-card bg-white p-8 group">
@@ -80,6 +81,49 @@ export default function Teachers() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* Teacher Videos Section */}
+      <section className="bg-surface-variant/20 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+            <div>
+              <span className="text-[10px] font-bold tracking-[0.3em] text-primary uppercase mb-4 block flex items-center gap-2">
+                <PlayCircle className="w-4 h-4" /> Video Bài Giảng
+              </span>
+              <h2 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface leading-[1.1]">
+                Giáo viên <span className="text-primary">Viết bảng</span>
+              </h2>
+            </div>
+            <p className="text-on-surface-variant text-sm max-w-md leading-relaxed font-light">
+              Trải nghiệm phong cách giảng dạy trực quan và sinh động từ đội ngũ giáo viên của chúng tôi qua các video thực tế.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {TEACHER_VIDEOS.map((video) => (
+              <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
+                <div className="aspect-video relative bg-slate-100">
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src={video.embedUrl} 
+                    title={video.title} 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerPolicy="strict-origin-when-cross-origin" 
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                  ></iframe>
+                </div>
+                <div className="p-6">
+                  <h3 className="font-headline text-xl font-bold text-on-surface mb-1">{video.teacherName}</h3>
+                  <p className="text-sm text-on-surface-variant">{video.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </motion.div>

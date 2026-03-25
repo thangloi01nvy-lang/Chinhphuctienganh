@@ -1,4 +1,4 @@
-import { Teacher, Course, Announcement, ScheduleItem, ConsultationRequest, DocumentItem } from './types';
+import { Teacher, Course, Announcement, ScheduleItem, ConsultationRequest, DocumentItem, TeacherVideo } from './types';
 
 export const TEACHERS: Teacher[] = [
   {
@@ -135,4 +135,13 @@ export const DOCUMENTS: DocumentItem[] = [
   { id: '7', title: 'Tài liệu mẫu 1', category: 'Ngữ pháp', url: '#', type: 'pdf' },
   { id: '8', title: 'Tài liệu mẫu 2', category: 'Ngữ pháp', url: '#', type: 'doc' },
   { id: '9', title: 'Tài liệu mẫu 3', category: 'Ngữ pháp', url: '#', type: 'pdf' },
+];
+
+export const TEACHER_VIDEOS: TeacherVideo[] = [
+  {
+    id: '1',
+    teacherName: 'Đặng Huỳnh Kỳ',
+    title: 'Video giảng dạy',
+    embedUrl: 'https://www.youtube.com/embed/gBoyhtra1cE?si=v7fKGb7b42vFkcED'
+  }
 ];
