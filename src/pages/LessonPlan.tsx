@@ -38,7 +38,7 @@ export default function LessonPlan() {
           <BookOpen className="w-5 h-5" /> Tải Giáo án (Word)
         </a>
         <a 
-          href="#" 
+          href="https://docs.google.com/presentation/d/1xhzZa7_K4SFsnaoH6C44u4jNchfqjCqI/edit?usp=sharing&ouid=108860886532372307984&rtpof=true&sd=true" 
           target="_blank" 
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-full font-bold text-sm hover:bg-primary-dim transition-colors shadow-lg w-full sm:w-auto justify-center"

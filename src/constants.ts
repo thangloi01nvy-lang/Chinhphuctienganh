@@ -125,7 +125,7 @@ export const CONSULTATIONS: ConsultationRequest[] = [
 export const DOCUMENTS: DocumentItem[] = [
   { id: 'doc-tt32', title: 'Thông tư 32/2018/TT-BGDĐT - Chương trình GDPT 2018', category: 'Văn bản', url: 'https://filethcs.hcm.edu.vn/Data/hcmedu/thcscanthanh/2022_3/thong-tu-32-2018-tt-bgddt-ban-hanh-chuong-trinh-giao-duc-pho-thong-moi_332022836.pdf', type: 'pdf' },
   { id: 'doc-lp-unit7', title: 'Kế hoạch bài dạy (Lesson Plan) - Unit 7: ARTISTS - Lesson 7D: Grammar', category: 'Văn bản', url: 'https://docs.google.com/document/d/e/2PACX-1vRWQcsAorqhshGr8Ga1axu3UZQCBOfIGyi1cwPOMicz-Bcyauv93LUHb8n17ybKwQ/pub', type: 'doc' },
-  { id: 'doc-ppt-unit7', title: 'Bài giảng trình chiếu (PPT) - Unit 7: ARTISTS - Lesson 7D: Grammar', category: 'Văn bản', url: '#', type: 'link' },
+  { id: 'doc-ppt-unit7', title: 'Bài giảng trình chiếu (PPT) - Unit 7: ARTISTS - Lesson 7D: Grammar', category: 'Văn bản', url: 'https://docs.google.com/presentation/d/1xhzZa7_K4SFsnaoH6C44u4jNchfqjCqI/edit?usp=sharing&ouid=108860886532372307984&rtpof=true&sd=true', type: 'link' },
   { id: '1', title: 'Tài liệu mẫu 1', category: 'IELTS', url: '#', type: 'pdf' },
   { id: '2', title: 'Tài liệu mẫu 2', category: 'IELTS', url: '#', type: 'doc' },
   { id: '3', title: 'Tài liệu mẫu 3', category: 'IELTS', url: '#', type: 'pdf' },

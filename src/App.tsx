@@ -8,6 +8,7 @@ import Documents from './pages/Documents';
 import Admin from './pages/Admin';
 
 import LessonPlan from './pages/LessonPlan';
+import Quiz from './pages/Quiz';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="student-hub" element={<StudentHub />} />
           <Route path="documents" element={<Documents />} />
           <Route path="lesson-plan" element={<LessonPlan />} />
+          <Route path="quiz" element={<Quiz />} />
           <Route path="admin" element={<Admin />} />
         </Route>
       </Routes>

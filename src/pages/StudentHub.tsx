@@ -144,7 +144,7 @@ export default function StudentHub() {
           </section>
 
           {/* Spotlight */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="bg-surface-variant/30 p-10 flex items-start gap-10">
               <div className="w-24 h-32 bg-white border border-outline/10 flex flex-col p-4 flex-shrink-0">
                 <div className="w-full h-1 bg-primary mb-2" />
@@ -173,6 +173,21 @@ export default function StudentHub() {
                 <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Unit 7: ARTISTS - Lesson 7D: Grammar</h5>
                 <Link to="/lesson-plan" className="mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
                   Xem chi tiết <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+            <div className="bg-surface-variant/30 p-10 flex items-start gap-10">
+              <div className="w-24 h-32 bg-white border border-outline/10 flex flex-col p-4 flex-shrink-0">
+                <div className="w-full h-1 bg-primary mb-2" />
+                <div className="mt-auto flex justify-center">
+                  <FileText className="w-8 h-8 text-surface-variant" />
+                </div>
+              </div>
+              <div>
+                <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Bài kiểm tra</span>
+                <h5 className="text-[16px] font-extrabold mt-2 leading-tight">Teen 3 - 3,5: Unit 5 Vocabulary & Listening</h5>
+                <Link to="/quiz" className="mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
+                  Làm bài ngay <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
