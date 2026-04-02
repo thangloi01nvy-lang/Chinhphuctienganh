@@ -18,13 +18,22 @@ export default function Home() {
       <section className="relative min-h-[800px] flex items-center overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full py-12">
           <div className="lg:col-span-7 space-y-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-block px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-[10px] font-bold tracking-[0.1em] uppercase"
-            >
-              SỰ ƯU TÚ THEO PHONG CÁCH TỐI GIẢN
-            </motion.div>
+            <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="-mb-6"
+              >
+                <span className="text-[#FF3B30] text-[10rem] md:text-[12rem] font-serif italic leading-none block -ml-4 drop-shadow-sm">2</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-[10px] font-bold tracking-[0.1em] uppercase relative z-10"
+              >
+                SỰ ƯU TÚ THEO PHONG CÁCH TỐI GIẢN
+              </motion.div>
+            </div>
             
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}

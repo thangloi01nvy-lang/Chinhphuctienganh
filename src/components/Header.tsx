@@ -27,8 +27,9 @@ export default function Header() {
     <header className="fixed top-0 w-full z-50 glass-header">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-12">
-          <Link to="/" className="text-xl font-bold tracking-tighter text-primary font-headline">
+          <Link to="/" className="text-xl font-bold tracking-tighter text-primary font-headline flex items-center">
             Chinh phục tiếng Anh
+            <span className="text-[#FF3B30] text-3xl font-serif italic ml-1 -mt-2 drop-shadow-sm">2</span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-8">
