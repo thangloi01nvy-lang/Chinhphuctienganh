@@ -80,27 +80,27 @@ export default function StudentHub() {
           {/* Featured Video */}
           <section className="bg-white border border-outline/10 overflow-hidden">
             <div className="aspect-video bg-slate-900 relative">
-              <img 
-                alt="Thumbnail" 
-                className="w-full h-full object-cover grayscale opacity-50" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8uGk-pP9EIHfx-JAViXopPuN_IGTYnGBfyDqqL996psoCtW5_VluxmJV_VtJVUf4mBBLXOmLMnbljxLwF-3m64LCSmoD_A_-0PW4y3diutgk-P3N3LsL2jceL51BuVpZMmlNnEroWeJZ_-dC7EzA6LfJGLD2B0RvZlYx_QHWwMDWT8hNYu17uhAMhan8kwXGJ2Rvpf16Oa-RbPKfGqcVJAHgTEQMn_8O3suM5m09uoQhPXvCYMbK6L9HGg5seJnLbidv8OD1VJtU"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 flex items-center justify-center group cursor-pointer">
-                <div className="w-16 h-16 border border-white/50 text-white flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
-                  <Play className="w-8 h-8 fill-current" />
-                </div>
-              </div>
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/jpGzBq3vhVk?si=Dn08rDvl6YUUK8yH" 
+                title="Bài giảng nổi bật" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              ></iframe>
             </div>
             <div className="p-10">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-10">
                 <div className="flex-grow max-w-xl">
                   <span className="border border-outline/10 text-on-surface-variant px-3 py-1 text-[9px] font-bold uppercase tracking-widest mb-6 inline-block">Bài giảng nổi bật</span>
-                  <h3 className="font-headline text-3xl font-extrabold mb-6 leading-tight">IELTS Speaking: "Nghệ thuật Ngập ngừng" và Sự trôi chảy</h3>
+                  <h3 className="font-headline text-3xl font-extrabold mb-6 leading-tight">Làm chủ thì Quá khứ hoàn thành qua phương pháp Kể chuyện</h3>
                   <ul className="text-[14px] text-on-surface-variant space-y-3 leading-relaxed border-l border-surface-variant pl-6">
-                    <li>Sử dụng các từ nối để lấp đầy khoảng nghỉ một cách tự nhiên.</li>
-                    <li>Cách diễn đạt lại các từ vựng phức tạp dưới áp lực phòng thi.</li>
-                    <li>Kỹ thuật tự sửa lỗi mà không làm ảnh hưởng đến sự mạch lạc.</li>
+                    <li>Hiểu sâu bản chất thì Quá khứ hoàn thành (Past Perfect) qua các câu chuyện sinh động.</li>
+                    <li>Ghi nhớ cấu trúc ngữ pháp một cách tự nhiên, không cần học thuộc lòng máy móc.</li>
+                    <li>Biết cách ứng dụng linh hoạt thì Quá khứ hoàn thành vào giao tiếp thực tế.</li>
                   </ul>
                 </div>
                 <button className="flex items-center gap-3 bg-primary text-white px-7 py-4 text-[11px] font-bold uppercase tracking-widest hover:bg-primary-dim transition-all">
