@@ -136,7 +136,7 @@ export default function Teachers() {
                 <PlayCircle className="w-4 h-4" /> Video Bài Giảng
               </span>
               <h2 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface leading-[1.1]">
-                Giáo viên <span className="text-primary">Viết bảng</span>
+                Phong cách <span className="text-primary">giảng bài</span>
               </h2>
             </div>
             <p className="text-on-surface-variant text-sm max-w-md leading-relaxed font-light">
