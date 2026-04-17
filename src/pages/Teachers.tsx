@@ -32,6 +32,19 @@ export default function Teachers() {
                             
     return matchesSearch && matchesCategory;
   });
+
+  const featuredVideoText = "thiết kế bài học blended learning giáo viên huỳnh kỳ trình bày thuyết trình chuyên đề đào tạo cách chia tỉ lệ học trực tiếp trực tuyến công cụ quản lý học tập lms canvas google classroom".toLowerCase();
+  const showFeaturedVideo = searchTerm === '' || featuredVideoText.includes(searchTerm.toLowerCase());
+
+  const filteredVideos = videos.filter(video => {
+    const title = video.title || '';
+    const teacherName = video.teacherName || '';
+    const desc = video.description || '';
+    const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          teacherName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          desc.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
   
   return (
     <motion.div 
@@ -144,57 +157,71 @@ export default function Teachers() {
             </p>
           </div>
 
-          <div className="bg-white border border-outline/10 rounded-2xl overflow-hidden shadow-sm mb-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              <div className="p-10 flex flex-col justify-center">
-                <span className="border border-outline/10 text-on-surface-variant w-fit px-3 py-1 text-[9px] font-bold uppercase tracking-widest mb-6 inline-block">Chuyên đề đào tạo</span>
-                <h3 className="font-headline text-3xl font-extrabold mb-4 leading-tight">Thiết kế bài học trong Blended Learning</h3>
-                <p className="text-primary font-bold text-sm mb-6">Trình bày: Giáo viên Huỳnh Kỳ</p>
-                <ul className="text-[14px] text-on-surface-variant space-y-3 leading-relaxed border-l border-surface-variant pl-6">
-                  <li>Cách chia tỉ lệ học trực tiếp – học trực tuyến.</li>
-                  <li>Công cụ quản lý học tập (LMS, Google Classroom, Canvas…).</li>
-                  <li>Ví dụ: một buổi học Tiếng Anh 6 có thể tổ chức thế nào.</li>
-                </ul>
-              </div>
-              <div className="aspect-video relative bg-slate-900 h-full min-h-[300px]">
-                <iframe 
-                  width="100%" 
-                  height="100%" 
-                  src="https://www.youtube.com/embed/n5rQ80-e_oM?si=CWxS3iHqwedG-rs4" 
-                  title="Thiết kế bài học trong Blended Learning" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                ></iframe>
-              </div>
+          {!showFeaturedVideo && filteredVideos.length === 0 ? (
+            <div className="py-20 text-center border-2 border-dashed border-outline/10 rounded-3xl bg-white">
+              <Search className="w-12 h-12 text-outline-variant mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-bold text-on-surface-variant mb-2">Không tìm thấy video</h3>
+              <p className="text-sm text-outline-variant">Thử thay đổi từ khóa tìm kiếm.</p>
             </div>
-          </div>
+          ) : (
+            <>
+              {showFeaturedVideo && (
+                <div className="bg-white border border-outline/10 rounded-2xl overflow-hidden shadow-sm mb-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-2">
+                    <div className="p-10 flex flex-col justify-center">
+                      <span className="border border-outline/10 text-on-surface-variant w-fit px-3 py-1 text-[9px] font-bold uppercase tracking-widest mb-6 inline-block">Chuyên đề đào tạo</span>
+                      <h3 className="font-headline text-3xl font-extrabold mb-4 leading-tight">Thiết kế bài học trong Blended Learning</h3>
+                      <p className="text-primary font-bold text-sm mb-6">Trình bày (Thuyết trình): Giáo viên Huỳnh Kỳ</p>
+                      <ul className="text-[14px] text-on-surface-variant space-y-3 leading-relaxed border-l border-surface-variant pl-6">
+                        <li>Cách chia tỉ lệ học trực tiếp – học trực tuyến.</li>
+                        <li>Công cụ quản lý học tập (LMS, Google Classroom, Canvas…).</li>
+                        <li>Ví dụ: một buổi học Tiếng Anh 6 có thể tổ chức thế nào.</li>
+                      </ul>
+                    </div>
+                    <div className="aspect-video relative bg-slate-900 h-full min-h-[300px]">
+                      <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/n5rQ80-e_oM?si=CWxS3iHqwedG-rs4" 
+                        title="Thiết kế bài học trong Blended Learning" 
+                        frameBorder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerPolicy="strict-origin-when-cross-origin" 
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full"
+                      ></iframe>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videos.map((video) => (
-              <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
-                <div className="aspect-video relative bg-slate-100">
-                  <iframe 
-                    width="100%" 
-                    height="100%" 
-                    src={video.embedUrl} 
-                    title={video.title} 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerPolicy="strict-origin-when-cross-origin" 
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                  ></iframe>
+              {filteredVideos.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredVideos.map((video) => (
+                    <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
+                      <div className="aspect-video relative bg-slate-100">
+                        <iframe 
+                          width="100%" 
+                          height="100%" 
+                          src={video.embedUrl} 
+                          title={video.title} 
+                          frameBorder="0" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                          referrerPolicy="strict-origin-when-cross-origin" 
+                          allowFullScreen
+                          className="absolute inset-0 w-full h-full"
+                        ></iframe>
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-headline text-xl font-bold text-on-surface mb-1">{video.teacherName}</h3>
+                        <p className="text-sm text-on-surface-variant">{video.title}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="p-6">
-                  <h3 className="font-headline text-xl font-bold text-on-surface mb-1">{video.teacherName}</h3>
-                  <p className="text-sm text-on-surface-variant">{video.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
