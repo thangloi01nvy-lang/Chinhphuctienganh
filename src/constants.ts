@@ -1,5 +1,12 @@
 import { Teacher, Course, Announcement, ScheduleItem, ConsultationRequest, DocumentItem, TeacherVideo } from './types';
 
+export const DOCUMENT_CATEGORIES: Record<string, string[]> = {
+  'Văn bản': ['Sách giáo khoa', 'Tài liệu tham khảo', 'Đề thi', 'Khác'],
+  'IELTS': ['Reading', 'Listening', 'Speaking', 'Writing', 'Vocabulary', 'Mock Tests', 'Khác'],
+  'TOEIC': ['Reading', 'Listening', 'Vocabulary', 'Mock Tests', 'Khác'],
+  'Ngữ pháp': ['Cơ bản', 'Nâng cao', 'Bài tập', 'Khác']
+};
+
 export const TEACHERS: Teacher[] = [
   {
     id: '1',

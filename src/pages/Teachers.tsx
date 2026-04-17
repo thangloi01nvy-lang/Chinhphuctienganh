@@ -144,6 +144,34 @@ export default function Teachers() {
             </p>
           </div>
 
+          <div className="bg-white border border-outline/10 rounded-2xl overflow-hidden shadow-sm mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="p-10 flex flex-col justify-center">
+                <span className="border border-outline/10 text-on-surface-variant w-fit px-3 py-1 text-[9px] font-bold uppercase tracking-widest mb-6 inline-block">Chuyên đề đào tạo</span>
+                <h3 className="font-headline text-3xl font-extrabold mb-4 leading-tight">Thiết kế bài học trong Blended Learning</h3>
+                <p className="text-primary font-bold text-sm mb-6">Trình bày: Giáo viên Huỳnh Kỳ</p>
+                <ul className="text-[14px] text-on-surface-variant space-y-3 leading-relaxed border-l border-surface-variant pl-6">
+                  <li>Cách chia tỉ lệ học trực tiếp – học trực tuyến.</li>
+                  <li>Công cụ quản lý học tập (LMS, Google Classroom, Canvas…).</li>
+                  <li>Ví dụ: một buổi học Tiếng Anh 6 có thể tổ chức thế nào.</li>
+                </ul>
+              </div>
+              <div className="aspect-video relative bg-slate-900 h-full min-h-[300px]">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src="https://www.youtube.com/embed/n5rQ80-e_oM?si=CWxS3iHqwedG-rs4" 
+                  title="Thiết kế bài học trong Blended Learning" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {videos.map((video) => (
               <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">

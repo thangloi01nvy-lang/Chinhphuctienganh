@@ -37,9 +37,10 @@ service cloud.firestore {
     }
 
     function isValidDocument(data) {
-      return hasOnlyAllowedFields(['title', 'category', 'url', 'type']) &&
+      return hasOnlyAllowedFields(['title', 'category', 'subCategory', 'url', 'type']) &&
              data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
              data.category is string && data.category.size() > 0 && data.category.size() < 100 &&
+             (!('subCategory' in data) || (data.subCategory is string && data.subCategory.size() < 100)) &&
              data.url is string && data.url.size() > 0 && data.url.size() < 1000 &&
              data.type in ['pdf', 'doc', 'link'];
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { CONSULTATIONS } from '../constants';
+import { CONSULTATIONS, DOCUMENT_CATEGORIES } from '../constants';
 import { Users, FileText, TrendingUp, Settings, CheckCircle, Clock, AlertCircle, Edit, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { useTeachers } from '../hooks/useTeachers';
 import { useDocuments } from '../hooks/useDocuments';
@@ -245,6 +245,7 @@ export default function Admin() {
         id: formData.id || Date.now().toString(),
         title: formData.title,
         category: formData.category,
+        subCategory: formData.subCategory || '',
         url: formData.url,
         type: formData.type as 'pdf' | 'doc' | 'link'
       });
@@ -260,16 +261,29 @@ export default function Admin() {
           </div>
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Danh mục</label>
-            <select value={formData.category || ''} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
+            <select value={formData.category || ''} onChange={e => setFormData({...formData, category: e.target.value, subCategory: ''})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required>
               <option value="">Chọn danh mục...</option>
-              <option value="Văn bản">Văn bản</option>
-              <option value="IELTS">IELTS</option>
-              <option value="TOEIC">TOEIC</option>
-              <option value="Ngữ pháp">Ngữ pháp</option>
+              {Object.keys(DOCUMENT_CATEGORIES).map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Danh mục con</label>
+            <select 
+              value={formData.subCategory || ''} 
+              onChange={e => setFormData({...formData, subCategory: e.target.value})} 
+              className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none"
+              disabled={!formData.category}
+            >
+              <option value="">Chọn danh mục con...</option>
+              {formData.category && DOCUMENT_CATEGORIES[formData.category]?.map(sub => (
+                <option key={sub} value={sub}>{sub}</option>
+              ))}
+            </select>
+          </div>
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-outline tracking-wider uppercase ml-1">Đường dẫn (URL)</label>
             <input value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} className="w-full bg-white border border-outline/10 rounded-xl px-4 py-2 text-sm outline-none" required />
@@ -574,7 +588,12 @@ export default function Admin() {
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div>
                     <h4 className="font-bold text-lg mb-1">{doc.title}</h4>
-                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-1 rounded-full">{doc.category}</span>
+                    <div className="flex gap-2">
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-1 rounded-full">{doc.category}</span>
+                      {doc.subCategory && (
+                        <span className="text-[10px] font-bold text-secondary uppercase tracking-widest bg-secondary/10 px-2 py-1 rounded-full">{doc.subCategory}</span>
+                      )}
+                    </div>
                   </div>
                   <span className="text-[10px] font-bold text-outline-variant uppercase tracking-widest border border-outline/10 px-2 py-1 rounded-md">{doc.type}</span>
                 </div>

@@ -48,6 +48,7 @@ export interface DocumentItem {
   id: string;
   title: string;
   category: string;
+  subCategory?: string;
   url: string;
   type: 'pdf' | 'doc' | 'link';
 }

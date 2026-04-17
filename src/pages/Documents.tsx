@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useDocuments } from '../hooks/useDocuments';
-import { Book, Download, Search, Filter } from 'lucide-react';
+import { Book, Download, Search, Filter, ChevronRight } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { DOCUMENT_CATEGORIES } from '../constants';
 
 export default function Documents() {
   const { documents } = useDocuments();
@@ -10,6 +11,7 @@ export default function Documents() {
   const initialSearchTerm = searchParams.get('q') || '';
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedCategory, setSelectedCategory] = useState<string>('Tất cả');
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Tất cả');
 
   useEffect(() => {
     const q = searchParams.get('q');
@@ -30,14 +32,19 @@ export default function Documents() {
     }
   };
 
-  const categories = ['Tất cả', 'Văn bản', 'IELTS', 'TOEIC', 'Ngữ pháp'];
+  const categories = ['Tất cả', ...Object.keys(DOCUMENT_CATEGORIES)];
+  const subCategories = selectedCategory !== 'Tất cả' && DOCUMENT_CATEGORIES[selectedCategory] 
+    ? ['Tất cả', ...DOCUMENT_CATEGORIES[selectedCategory]] 
+    : [];
 
   const filteredDocuments = documents.filter(doc => {
     const title = doc.title || '';
     const category = doc.category || '';
+    const subCategory = doc.subCategory || '';
     const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'Tất cả' || category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesSubCategory = selectedSubCategory === 'Tất cả' || subCategory === selectedSubCategory;
+    return matchesSearch && matchesCategory && matchesSubCategory;
   });
 
   return (
@@ -58,32 +65,56 @@ export default function Documents() {
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row gap-6 mb-12">
-        <div className="relative flex-grow max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-outline-variant" />
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm tài liệu..." 
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="w-full bg-white border border-outline/10 rounded-xl pl-12 pr-4 py-3.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none shadow-sm"
-          />
+      <div className="flex flex-col gap-6 mb-12">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="relative flex-grow max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-outline-variant" />
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm tài liệu..." 
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full bg-white border border-outline/10 rounded-xl pl-12 pr-4 py-3.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none shadow-sm"
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setSelectedSubCategory('Tất cả');
+                }}
+                className={`px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors shadow-sm ${
+                  selectedCategory === cat 
+                    ? 'bg-primary text-white' 
+                    : 'bg-white border border-outline/10 text-on-surface-variant hover:bg-surface'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors shadow-sm ${
-                selectedCategory === cat 
-                  ? 'bg-primary text-white' 
-                  : 'bg-white border border-outline/10 text-on-surface-variant hover:bg-surface'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+
+        {subCategories.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar items-center">
+            <Filter className="w-4 h-4 text-outline-variant mr-2 flex-shrink-0" />
+            {subCategories.map(sub => (
+              <button
+                key={sub}
+                onClick={() => setSelectedSubCategory(sub)}
+                className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border ${
+                  selectedSubCategory === sub 
+                    ? 'bg-secondary/10 text-secondary border-secondary/20' 
+                    : 'bg-transparent border-outline/10 text-on-surface-variant hover:bg-surface'
+                }`}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -99,9 +130,16 @@ export default function Documents() {
                 </span>
               </div>
               <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">{doc.title}</h3>
-              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-6 block">
-                Danh mục: {doc.category}
-              </span>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-variant/30 px-2 py-1 rounded-md">
+                  {doc.category}
+                </span>
+                {doc.subCategory && (
+                  <span className="text-[10px] font-bold text-secondary uppercase tracking-widest bg-secondary/10 px-2 py-1 rounded-md">
+                    {doc.subCategory}
+                  </span>
+                )}
+              </div>
               <a 
                 href={doc.url} 
                 target="_blank" 
