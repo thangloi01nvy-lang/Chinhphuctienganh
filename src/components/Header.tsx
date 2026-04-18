@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTeachers } from '../hooks/useTeachers';
 import { useDocuments } from '../hooks/useDocuments';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
+import { smartSearch } from '../utils/search';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function Header() {
   const { documents } = useDocuments();
   const { videos } = useTeacherVideos();
 
-  const featuredVideoText = "thiết kế bài học blended learning giáo viên huỳnh kỳ trình bày thuyết trình chuyên đề đào tạo cách chia tỉ lệ học trực tiếp trực tuyến công cụ quản lý học tập lms canvas google classroom".toLowerCase();
+  const featuredVideoText = "thiết kế bài học blended learning giáo viên huỳnh kỳ trình bày thuyết trình chuyên đề đào tạo cách chia tỉ lệ học trực tiếp trực tuyến công cụ quản lý học tập lms canvas google classroom";
   const searchTerm = searchQuery.toLowerCase().trim();
 
   // Close search dropdown when clicking outside
@@ -32,24 +33,24 @@ export default function Header() {
   }, []);
 
   const filteredTeachers = searchTerm ? teachers.filter(t => 
-    t.name.toLowerCase().includes(searchTerm) || 
-    t.role.toLowerCase().includes(searchTerm) || 
-    (t.bio && t.bio.toLowerCase().includes(searchTerm)) ||
-    (t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+    smartSearch(t.name, searchTerm) || 
+    smartSearch(t.role, searchTerm) || 
+    smartSearch(t.bio, searchTerm) ||
+    (t.tags && t.tags.some(tag => smartSearch(tag, searchTerm)))
   ) : [];
   
   const filteredDocs = searchTerm ? documents.filter(d => 
-    (d.title && d.title.toLowerCase().includes(searchTerm)) || 
-    (d.category && d.category.toLowerCase().includes(searchTerm)) || 
-    (d.subCategory && d.subCategory.toLowerCase().includes(searchTerm))
+    smartSearch(d.title, searchTerm) || 
+    smartSearch(d.category, searchTerm) || 
+    smartSearch(d.subCategory, searchTerm)
   ) : [];
   
   const filteredVideos = searchTerm ? videos.filter(v => 
-    (v.title && v.title.toLowerCase().includes(searchTerm)) || 
-    (v.teacherName && v.teacherName.toLowerCase().includes(searchTerm))
+    smartSearch(v.title, searchTerm) || 
+    smartSearch(v.teacherName, searchTerm)
   ) : [];
   
-  const showFeaturedVideo = searchTerm && featuredVideoText.includes(searchTerm);
+  const showFeaturedVideo = searchTerm && smartSearch(featuredVideoText, searchTerm);
   const showResults = isSearchFocused && searchTerm.length > 0;
   const hasResults = filteredTeachers.length > 0 || filteredDocs.length > 0 || filteredVideos.length > 0 || showFeaturedVideo;
 

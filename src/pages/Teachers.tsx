@@ -5,6 +5,7 @@ import { useTeachers } from '../hooks/useTeachers';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
 import { ArrowRight, Verified, PlayCircle, Search, X, Mail, Phone, Facebook } from 'lucide-react';
 import { Teacher } from '../types';
+import { smartSearch } from '../utils/search';
 
 export default function Teachers() {
   const { teachers } = useTeachers();
@@ -46,8 +47,8 @@ export default function Teachers() {
     const role = teacher.role || '';
     const tags = teacher.tags || [];
     
-    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          role.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = smartSearch(name, searchTerm) || 
+                          smartSearch(role, searchTerm);
     
     const matchesCategory = selectedCategory === 'Tất cả' || 
                             role.toLowerCase().includes(selectedCategory.toLowerCase()) ||
@@ -56,16 +57,16 @@ export default function Teachers() {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredVideoText = "thiết kế bài học blended learning giáo viên huỳnh kỳ trình bày thuyết trình chuyên đề đào tạo cách chia tỉ lệ học trực tiếp trực tuyến công cụ quản lý học tập lms canvas google classroom".toLowerCase();
-  const showFeaturedVideo = searchTerm === '' || featuredVideoText.includes(searchTerm.toLowerCase());
+  const featuredVideoText = "thiết kế bài học blended learning giáo viên huỳnh kỳ trình bày thuyết trình chuyên đề đào tạo cách chia tỉ lệ học trực tiếp trực tuyến công cụ quản lý học tập lms canvas google classroom";
+  const showFeaturedVideo = searchTerm === '' || smartSearch(featuredVideoText, searchTerm);
 
   const filteredVideos = videos.filter(video => {
     const title = video.title || '';
     const teacherName = video.teacherName || '';
     const desc = video.description || '';
-    const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          teacherName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          desc.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = smartSearch(title, searchTerm) || 
+                          smartSearch(teacherName, searchTerm) ||
+                          smartSearch(desc, searchTerm);
     return matchesSearch;
   });
   
