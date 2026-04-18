@@ -37,10 +37,20 @@ export default function Home() {
     smartSearch(v.title, searchTerm) || 
     smartSearch(v.teacherName, searchTerm)
   ) : [];
+
+  const ALL_SUGGESTIONS = [
+    'Giao tiếp', 'IELTS', 'TOEIC', 'Thiếu nhi', 'Thương mại', 
+    'Ngữ pháp', 'Phát âm', 'Blended Learning', 'Thuyết trình', 
+    'Canvas', 'Giáo án', 'Tài liệu', 'Video bài giảng'
+  ];
+
+  const suggestedTerms = searchTerm.length > 0 
+    ? ALL_SUGGESTIONS.filter(term => smartSearch(term, searchTerm) && term.toLowerCase() !== searchTerm)
+    : [];
   
   const showFeaturedVideo = searchTerm && smartSearch(featuredVideoText, searchTerm);
   const showResults = isSearchFocused && searchTerm.length > 0;
-  const hasResults = filteredTeachers.length > 0 || filteredDocs.length > 0 || filteredVideos.length > 0 || showFeaturedVideo;
+  const hasResults = filteredTeachers.length > 0 || filteredDocs.length > 0 || filteredVideos.length > 0 || showFeaturedVideo || suggestedTerms.length > 0;
 
   return (
     <motion.div 
@@ -130,6 +140,25 @@ export default function Home() {
                       </div>
                     ) : (
                       <div className="space-y-6">
+                        {/* Suggestions */}
+                        {suggestedTerms.length > 0 && (
+                          <div>
+                            <h3 className="text-[10px] font-bold text-outline-variant uppercase tracking-widest px-4 mb-3 border-b border-outline/10 pb-2">Từ khoá gợi ý</h3>
+                            <div className="flex flex-wrap gap-2 px-4">
+                              {suggestedTerms.map(term => (
+                                <button
+                                  key={`home-suggest-${term}`}
+                                  onClick={() => setGlobalSearch(term)}
+                                  className="text-[13px] font-medium bg-surface-variant/30 text-on-surface px-4 py-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-1.5"
+                                >
+                                  <Search className="w-3.5 h-3.5" />
+                                  {term}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {/* Teachers Results */}
                         {filteredTeachers.length > 0 && (
                           <div>

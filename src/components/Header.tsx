@@ -50,9 +50,19 @@ export default function Header() {
     smartSearch(v.teacherName, searchTerm)
   ) : [];
   
+  const ALL_SUGGESTIONS = [
+    'Giao tiếp', 'IELTS', 'TOEIC', 'Thiếu nhi', 'Thương mại', 
+    'Ngữ pháp', 'Phát âm', 'Blended Learning', 'Thuyết trình', 
+    'Canvas', 'Giáo án', 'Tài liệu', 'Video bài giảng'
+  ];
+
+  const suggestedTerms = searchTerm.length > 0 
+    ? ALL_SUGGESTIONS.filter(term => smartSearch(term, searchTerm) && term.toLowerCase() !== searchTerm)
+    : [];
+
   const showFeaturedVideo = searchTerm && smartSearch(featuredVideoText, searchTerm);
   const showResults = isSearchFocused && searchTerm.length > 0;
-  const hasResults = filteredTeachers.length > 0 || filteredDocs.length > 0 || filteredVideos.length > 0 || showFeaturedVideo;
+  const hasResults = filteredTeachers.length > 0 || filteredDocs.length > 0 || filteredVideos.length > 0 || showFeaturedVideo || suggestedTerms.length > 0;
 
   const navLinks = [
     { to: '/', label: 'Trang chủ' },
@@ -131,6 +141,27 @@ export default function Header() {
                     </div>
                   ) : (
                     <div className="space-y-4">
+                      {suggestedTerms.length > 0 && (
+                        <div>
+                          <h3 className="text-[9px] font-bold text-outline-variant uppercase tracking-widest px-3 mb-2 border-b border-outline/10 pb-1">Từ khoá gợi ý</h3>
+                          <div className="flex flex-wrap gap-2 px-3">
+                            {suggestedTerms.map(term => (
+                              <button
+                                key={`desk-suggest-${term}`}
+                                onClick={() => {
+                                  setSearchQuery(term);
+                                  searchRef.current?.querySelector('input')?.focus();
+                                }}
+                                className="text-[11px] font-medium bg-surface-variant/30 text-on-surface px-3 py-1.5 rounded-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-1"
+                              >
+                                <Search className="w-3 h-3" />
+                                {term}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       {filteredTeachers.length > 0 && (
                         <div>
                           <h3 className="text-[9px] font-bold text-outline-variant uppercase tracking-widest px-3 mb-2 border-b border-outline/10 pb-1">Giáo viên</h3>
@@ -265,6 +296,24 @@ export default function Header() {
                     </div>
                   ) : (
                     <div className="space-y-5">
+                      {suggestedTerms.length > 0 && (
+                        <div>
+                          <h3 className="text-[10px] font-bold text-outline-variant uppercase tracking-widest mb-3 border-b border-outline/10 pb-1">Từ khoá gợi ý</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {suggestedTerms.map(term => (
+                              <button
+                                key={`mob-suggest-${term}`}
+                                onClick={() => setSearchQuery(term)}
+                                className="text-xs font-medium bg-surface-variant/30 text-on-surface px-3 py-1.5 rounded-full hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-1"
+                              >
+                                <Search className="w-3.5 h-3.5" />
+                                {term}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       {filteredTeachers.length > 0 && (
                         <div>
                           <h3 className="text-[10px] font-bold text-outline-variant uppercase tracking-widest mb-2 border-b border-outline/10 pb-1">Giáo viên</h3>
