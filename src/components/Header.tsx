@@ -137,7 +137,7 @@ export default function Header() {
                             {filteredTeachers.map(teacher => (
                               <button
                                 key={`desk-teacher-${teacher.id}`} 
-                                onClick={() => handleResultClick('/teachers')}
+                                onClick={() => handleResultClick(`/teachers#teacher-${teacher.id}`)}
                                 className="w-full text-left flex items-center gap-3 p-2 rounded-xl hover:bg-surface-variant/30 transition-colors"
                               >
                                 <img src={teacher.image} alt={teacher.name} className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
@@ -183,7 +183,7 @@ export default function Header() {
                           <div className="space-y-1">
                             {showFeaturedVideo && (
                               <button
-                                onClick={() => handleResultClick('/teachers')}
+                                onClick={() => handleResultClick('/teachers#featured-video')}
                                 className="w-full text-left flex items-start gap-3 p-2 rounded-xl hover:bg-surface-variant/30 transition-colors"
                               >
                                 <div className="p-1.5 bg-primary/10 rounded-lg text-primary mt-0.5"><PlayCircle className="w-4 h-4"/></div>
@@ -196,7 +196,7 @@ export default function Header() {
                             {filteredVideos.map(video => (
                               <button
                                 key={`desk-video-${video.id}`} 
-                                onClick={() => handleResultClick('/teachers')}
+                                onClick={() => handleResultClick(`/teachers#video-${video.id}`)}
                                 className="w-full text-left flex items-start gap-3 p-2 rounded-xl hover:bg-surface-variant/30 transition-colors"
                               >
                                 <div className="p-1.5 bg-surface-variant/50 rounded-lg text-primary mt-0.5"><PlayCircle className="w-4 h-4"/></div>
@@ -271,7 +271,7 @@ export default function Header() {
                             {filteredTeachers.map(teacher => (
                               <button
                                 key={`mob-teacher-${teacher.id}`} 
-                                onClick={() => { setIsMenuOpen(false); handleResultClick('/teachers'); }}
+                                onClick={() => { setIsMenuOpen(false); handleResultClick(`/teachers#teacher-${teacher.id}`); }}
                                 className="w-full text-left flex items-center gap-3"
                               >
                                 <img src={teacher.image} alt={teacher.name} className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
@@ -311,7 +311,7 @@ export default function Header() {
                           <div className="space-y-2">
                             {showFeaturedVideo && (
                               <button
-                                onClick={() => { setIsMenuOpen(false); handleResultClick('/teachers'); }}
+                                onClick={() => { setIsMenuOpen(false); handleResultClick('/teachers#featured-video'); }}
                                 className="w-full text-left flex items-start gap-3"
                               >
                                 <div className="text-primary mt-0.5"><PlayCircle className="w-4 h-4"/></div>
@@ -323,7 +323,7 @@ export default function Header() {
                             {filteredVideos.map(video => (
                               <button
                                 key={`mob-video-${video.id}`} 
-                                onClick={() => { setIsMenuOpen(false); handleResultClick('/teachers'); }}
+                                onClick={() => { setIsMenuOpen(false); handleResultClick(`/teachers#video-${video.id}`); }}
                                 className="w-full text-left flex items-start gap-3"
                               >
                                 <div className="text-primary mt-0.5"><PlayCircle className="w-4 h-4"/></div>

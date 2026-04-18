@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLocation } from 'react-router-dom';
 import { useTeachers } from '../hooks/useTeachers';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
 import { ArrowRight, Verified, PlayCircle, Search, X, Mail, Phone, Facebook } from 'lucide-react';
@@ -11,10 +12,32 @@ export default function Teachers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const location = useLocation();
   
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => {
+    if (location.hash) {
+      // Small timeout to ensure DOM is ready
+      setTimeout(() => {
+        const id = location.hash.substring(1);
+        
+        // If it's a teacher, automatically pop the modal open and scroll to them
+        if (id.startsWith('teacher-')) {
+          const rawId = id.replace('teacher-', '');
+          const teacher = teachers.find(t => t.id === rawId);
+          if (teacher) {
+            setSelectedTeacher(teacher);
+          }
+        }
+
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 200);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.hash, teachers]);
 
   const categories = ['Tất cả', 'Giao tiếp', 'TOEIC', 'Thiếu nhi', 'Thương mại'];
 
@@ -108,7 +131,7 @@ export default function Teachers() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {filteredTeachers.length > 0 ? (
             filteredTeachers.map((teacher) => (
-              <article key={teacher.id} className="scholar-card bg-white p-8 group cursor-pointer" onClick={() => setSelectedTeacher(teacher)}>
+              <article id={`teacher-${teacher.id}`} key={teacher.id} className="scholar-card bg-white p-8 group cursor-pointer" onClick={() => setSelectedTeacher(teacher)}>
                 <div className="relative overflow-hidden rounded-xl mb-8 aspect-[4/5] bg-surface-variant/30">
                   <img 
                     alt={teacher.name} 
@@ -141,7 +164,7 @@ export default function Teachers() {
       </section>
 
       {/* Teacher Videos Section */}
-      <section className="bg-surface-variant/20 py-20">
+      <section id="videos" className="bg-surface-variant/20 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
@@ -166,7 +189,7 @@ export default function Teachers() {
           ) : (
             <>
               {showFeaturedVideo && (
-                <div className="bg-white border border-outline/10 rounded-2xl overflow-hidden shadow-sm mb-12">
+                <div id="featured-video" className="bg-white border border-outline/10 rounded-2xl overflow-hidden shadow-sm mb-12">
                   <div className="grid grid-cols-1 lg:grid-cols-2">
                     <div className="p-10 flex flex-col justify-center">
                       <span className="border border-outline/10 text-on-surface-variant w-fit px-3 py-1 text-[9px] font-bold uppercase tracking-widest mb-6 inline-block">Chuyên đề đào tạo</span>
@@ -198,7 +221,7 @@ export default function Teachers() {
               {filteredVideos.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredVideos.map((video) => (
-                    <div key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
+                    <div id={`video-${video.id}`} key={video.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline/10 group">
                       <div className="aspect-video relative bg-slate-100">
                         <iframe 
                           width="100%" 

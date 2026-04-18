@@ -137,7 +137,7 @@ export default function Home() {
                               {filteredTeachers.map(teacher => (
                                 <Link 
                                   key={`teacher-${teacher.id}`} 
-                                  to="/teachers" 
+                                  to={`/teachers#teacher-${teacher.id}`} 
                                   className="flex items-center gap-4 p-3 rounded-2xl hover:bg-surface-variant/30 transition-colors"
                                 >
                                   <img src={teacher.image} alt={teacher.name} className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
@@ -185,7 +185,7 @@ export default function Home() {
                             <div className="space-y-1">
                               {showFeaturedVideo && (
                                 <Link 
-                                  to="/teachers" 
+                                  to="/teachers#featured-video" 
                                   className="flex items-start gap-4 p-3 rounded-2xl hover:bg-surface-variant/30 transition-colors"
                                 >
                                   <div className="p-2 bg-primary/10 rounded-xl text-primary"><PlayCircle className="w-5 h-5"/></div>
@@ -198,7 +198,7 @@ export default function Home() {
                               {filteredVideos.map(video => (
                                 <Link 
                                   key={`video-${video.id}`} 
-                                  to="/teachers" 
+                                  to={`/teachers#video-${video.id}`} 
                                   className="flex items-start gap-4 p-3 rounded-2xl hover:bg-surface-variant/30 transition-colors"
                                 >
                                   <div className="p-2 bg-surface-variant/50 rounded-xl text-primary"><PlayCircle className="w-5 h-5"/></div>
