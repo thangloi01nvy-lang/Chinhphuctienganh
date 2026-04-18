@@ -144,23 +144,7 @@ export default function StudentHub() {
           </section>
 
           {/* Spotlight */}
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-surface-variant/30 p-6 md:p-8 flex flex-col sm:flex-row items-start gap-6 rounded-2xl">
-              <div className="w-20 md:w-24 h-28 md:h-32 bg-white border border-outline/10 flex flex-col p-4 flex-shrink-0 rounded-lg shadow-sm">
-                <div className="w-full h-1 bg-primary mb-2" />
-                <div className="w-2/3 h-1 bg-surface-variant mb-1" />
-                <div className="mt-auto flex justify-center">
-                  <Book className="w-8 h-8 text-surface-variant" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest mb-2 block">Cẩm nang</span>
-                <h5 className="text-base md:text-lg font-extrabold leading-tight">Sổ tay Thành ngữ tiếng Anh Đầy đủ</h5>
-                <button className="mt-4 lg:mt-6 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group">
-                  Tải PDF <Download className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-                </button>
-              </div>
-            </div>
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-surface-variant/30 p-6 md:p-8 flex flex-col sm:flex-row items-start gap-6 rounded-2xl">
               <div className="w-20 md:w-24 h-28 md:h-32 bg-white border border-outline/10 flex flex-col p-4 flex-shrink-0 rounded-lg shadow-sm">
                 <div className="w-full h-1 bg-outline-variant mb-2" />
