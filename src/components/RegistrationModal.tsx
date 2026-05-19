@@ -16,6 +16,19 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!name.trim()) {
+      setStatus('error');
+      setErrorMessage('Vui lòng nhập họ và tên của bạn.');
+      return;
+    }
+
+    if (!email.trim() && !phone.trim()) {
+      setStatus('error');
+      setErrorMessage('Vui lòng nhập Email hoặc Số điện thoại Zalo.');
+      return;
+    }
+
     setStatus('loading');
     setErrorMessage('');
 
@@ -112,7 +125,6 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-outline-variant" />
                         <input
                           type="text"
-                          required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="Họ và tên của bạn"
@@ -157,7 +169,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
 
                     <button
                       type="submit"
-                      disabled={status === 'loading' || (!email && !phone) || !name}
+                      disabled={status === 'loading'}
                       className="w-full cta-gradient text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 mt-4 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {status === 'loading' ? (
