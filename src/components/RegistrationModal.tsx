@@ -39,17 +39,24 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
         body: JSON.stringify({ name, email, phone })
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setStatus('success');
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        const data = await res.json();
+        if (res.ok) {
+          setStatus('success');
+        } else {
+          setStatus('error');
+          setErrorMessage(data.error || 'Đã có lỗi xảy ra.');
+        }
       } else {
+        // Fallback for when server returns HTML (e.g. Vercel static fallback)
         setStatus('error');
-        setErrorMessage(data.error || 'Đã có lỗi xảy ra.');
+        setErrorMessage('Máy chủ không phản hồi đúng định dạng. (Lỗi cấu hình Backend)');
       }
     } catch (err) {
+      console.error("Lỗi fetch:", err);
       setStatus('error');
-      setErrorMessage('Không thể kết nối đến máy chủ.');
+      setErrorMessage('Không thể kết nối đến máy chủ. Vui lòng thử lại sau.');
     }
   };
 
@@ -67,24 +74,28 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+        <motion.div
+          key="registration-modal-root"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[101] flex items-center justify-center p-4 sm:p-6"
+        >
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
             onClick={handleClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
+          
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md max-h-[90vh] bg-white rounded-3xl shadow-2xl z-[101] overflow-y-auto"
+            initial={{ scale: 0.95, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 20 }}
+            className="relative w-full max-w-md max-h-[100dvh] bg-white rounded-3xl shadow-2xl overflow-y-auto flex flex-col"
           >
-            <div className="relative p-8">
+            <div className="relative p-6 sm:p-8">
               <button 
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 text-outline-variant hover:text-on-surface hover:bg-surface-variant/50 rounded-full transition-colors"
+                className="absolute top-4 right-4 p-2 text-outline-variant hover:text-on-surface hover:bg-surface-variant/50 rounded-full transition-colors z-10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -186,7 +197,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
               )}
             </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );
