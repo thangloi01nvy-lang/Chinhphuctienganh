@@ -45,10 +45,12 @@ export default function Teachers() {
   const filteredTeachers = teachers.filter(teacher => {
     const name = teacher.name || '';
     const role = teacher.role || '';
+    const quote = teacher.quote || '';
     const tags = teacher.tags || [];
     
     const matchesSearch = smartSearch(name, searchTerm) || 
-                          smartSearch(role, searchTerm);
+                          smartSearch(role, searchTerm) ||
+                          smartSearch(quote, searchTerm);
     
     const matchesCategory = selectedCategory === 'Tất cả' || 
                             role.toLowerCase().includes(selectedCategory.toLowerCase()) ||

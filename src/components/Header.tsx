@@ -6,11 +6,13 @@ import { useTeachers } from '../hooks/useTeachers';
 import { useDocuments } from '../hooks/useDocuments';
 import { useTeacherVideos } from '../hooks/useTeacherVideos';
 import { smartSearch } from '../utils/search';
+import RegistrationModal from './RegistrationModal';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -248,7 +250,10 @@ export default function Header() {
             </AnimatePresence>
           </div>
           
-          <button className="cta-gradient text-white px-6 py-2 rounded-full font-headline text-sm font-bold tracking-tight hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap">
+          <button 
+            onClick={() => setIsRegistrationModalOpen(true)}
+            className="cta-gradient text-white px-6 py-2 rounded-full font-headline text-sm font-bold tracking-tight hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
+          >
             Đăng ký ngay
           </button>
 
@@ -406,6 +411,11 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <RegistrationModal 
+        isOpen={isRegistrationModalOpen} 
+        onClose={() => setIsRegistrationModalOpen(false)} 
+      />
     </header>
   );
 }
